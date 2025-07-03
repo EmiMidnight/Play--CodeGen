@@ -67,9 +67,9 @@ CX86Assembler::XMMREGISTER CCodeGen_x86_64::g_mdRegisters[MAX_MDREGISTERS] =
 template <typename ALUOP>
 void CCodeGen_x86_64::Emit_Alu64_MemMemMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	CX86Assembler::REGISTER tmpReg = CX86Assembler::rAX;
 
@@ -81,9 +81,9 @@ void CCodeGen_x86_64::Emit_Alu64_MemMemMem(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86_64::Emit_Alu64_MemMemCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT64);
 
@@ -107,9 +107,9 @@ void CCodeGen_x86_64::Emit_Alu64_MemMemCst(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86_64::Emit_Alu64_MemCstMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT64);
 
@@ -134,9 +134,9 @@ void CCodeGen_x86_64::Emit_Alu64_MemCstMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86_64::Emit_Shift64_RelRelReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_RELATIVE64);
 	assert(src1->m_type == SYM_RELATIVE64);
@@ -154,9 +154,9 @@ void CCodeGen_x86_64::Emit_Shift64_RelRelReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86_64::Emit_Shift64_RelRelMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_RELATIVE64);
 	assert(src1->m_type == SYM_RELATIVE64);
@@ -173,9 +173,9 @@ void CCodeGen_x86_64::Emit_Shift64_RelRelMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86_64::Emit_Shift64_RelRelCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_RELATIVE64);
 	assert(src1->m_type == SYM_RELATIVE64);
@@ -345,7 +345,7 @@ void CCodeGen_x86_64::Emit_Prolog(const StatementList& statements, unsigned int 
 			case OP_PARAM:
 			case OP_PARAM_RET:
 			{
-				CSymbol* src1 = statement.src1->GetSymbol().get();
+				CSymbol* src1 = statement.src1->GetSymbol();
 				switch(src1->m_type)
 				{
 				case SYM_REGISTER128:
@@ -444,7 +444,7 @@ void CCodeGen_x86_64::Emit_Param_Reg(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32) {
@@ -457,7 +457,7 @@ void CCodeGen_x86_64::Emit_Param_Mem(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32) {
@@ -470,7 +470,7 @@ void CCodeGen_x86_64::Emit_Param_Cst(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32) {
@@ -483,7 +483,7 @@ void CCodeGen_x86_64::Emit_Param_Mem64(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32) {
@@ -496,7 +496,7 @@ void CCodeGen_x86_64::Emit_Param_Cst64(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32) {
@@ -509,7 +509,7 @@ void CCodeGen_x86_64::Emit_Param_Reg128(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32 paramSpillOffset) {
@@ -524,7 +524,7 @@ void CCodeGen_x86_64::Emit_Param_Mem128(const STATEMENT& statement)
 {
 	assert(m_params.size() < m_maxParams);
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_params.push_back(
 	    [this, src1](CX86Assembler::REGISTER paramReg, uint32) {
@@ -535,8 +535,8 @@ void CCodeGen_x86_64::Emit_Param_Mem128(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Call(const STATEMENT& statement)
 {
-	const auto& src1 = statement.src1->GetSymbol().get();
-	const auto& src2 = statement.src2->GetSymbol().get();
+	const auto& src1 = statement.src1->GetSymbol();
+	const auto& src2 = statement.src2->GetSymbol();
 
 	unsigned int paramCount = src2->m_valueLow;
 	uint32 paramSpillOffset = 0;
@@ -557,7 +557,7 @@ void CCodeGen_x86_64::Emit_Call(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_RetVal_Reg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 
@@ -566,19 +566,19 @@ void CCodeGen_x86_64::Emit_RetVal_Reg(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_RetVal_Mem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
 	m_assembler.MovGd(MakeMemorySymbolAddress(dst), CX86Assembler::rAX);
 }
 
 void CCodeGen_x86_64::Emit_RetVal_Mem64(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
 	m_assembler.MovGq(MakeMemory64SymbolAddress(dst), CX86Assembler::rAX);
 }
 
 void CCodeGen_x86_64::Emit_RetVal_Reg128(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
 
 	//TODO: Use only integer operations
 	m_assembler.MovqVo(m_mdRegisters[dst->m_valueLow], CX86Assembler::MakeRegisterAddress(CX86Assembler::rAX));
@@ -588,14 +588,14 @@ void CCodeGen_x86_64::Emit_RetVal_Reg128(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_RetVal_Mem128(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
 	m_assembler.MovGq(MakeMemory128SymbolElementAddress(dst, 0), CX86Assembler::rAX);
 	m_assembler.MovGq(MakeMemory128SymbolElementAddress(dst, 2), CX86Assembler::rDX);
 }
 
 void CCodeGen_x86_64::Emit_ExternJmp(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_assembler.MovEq(m_paramRegs[0], CX86Assembler::MakeRegisterAddress(g_baseRegister));
 	Emit_Epilog();
@@ -608,8 +608,8 @@ void CCodeGen_x86_64::Emit_ExternJmp(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Mov_Mem64Mem64(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
 
 	m_assembler.MovEq(CX86Assembler::rAX, MakeMemory64SymbolAddress(src1));
 	m_assembler.MovGq(MakeMemory64SymbolAddress(dst), CX86Assembler::rAX);
@@ -617,16 +617,16 @@ void CCodeGen_x86_64::Emit_Mov_Mem64Mem64(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Mov_Rel64Cst64(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	WriteConstant64ToAddress(MakeRelative64SymbolAddress(dst), CX86Assembler::rAX, src1->GetConstant64());
 }
 
 void CCodeGen_x86_64::Emit_Mov_RegRefMemRef(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_REG_REFERENCE);
 
@@ -635,8 +635,8 @@ void CCodeGen_x86_64::Emit_Mov_RegRefMemRef(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Mov_MemRefRegRef(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_REG_REFERENCE);
 
@@ -645,9 +645,9 @@ void CCodeGen_x86_64::Emit_Mov_MemRefRegRef(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Cmp_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDef(dst, CX86Assembler::rCX);
 	auto src1Reg = PrepareSymbolRegisterUse(src1, CX86Assembler::rDX);
@@ -661,9 +661,9 @@ void CCodeGen_x86_64::Emit_Cmp_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Cmp_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDef(dst, CX86Assembler::rCX);
 
@@ -676,9 +676,9 @@ void CCodeGen_x86_64::Emit_Cmp_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Cmp64_VarMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDef(dst, CX86Assembler::rAX);
 	m_assembler.XorEd(dstReg, CX86Assembler::MakeRegisterAddress(dstReg));
@@ -694,9 +694,9 @@ void CCodeGen_x86_64::Emit_Cmp64_VarMemMem(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Cmp64_VarMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT64);
 
@@ -729,8 +729,8 @@ void CCodeGen_x86_64::Emit_Cmp64_VarMemCst(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_RelToRef_VarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT);
 
@@ -741,9 +741,9 @@ void CCodeGen_x86_64::Emit_RelToRef_VarCst(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_AddRef_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	//TODO: Sign extend this, or we might get in trouble
 	auto offsetReg = PrepareSymbolRegisterUse(src2, CX86Assembler::rCX);
@@ -760,9 +760,9 @@ void CCodeGen_x86_64::Emit_AddRef_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_AddRef_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 
@@ -779,8 +779,8 @@ void CCodeGen_x86_64::Emit_AddRef_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_IsRefNull_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto dstReg = PrepareSymbolRegisterDef(dst, CX86Assembler::rDX);
@@ -794,8 +794,8 @@ void CCodeGen_x86_64::Emit_IsRefNull_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_LoadFromRef_64_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto dstReg = CX86Assembler::rCX;
@@ -806,9 +806,9 @@ void CCodeGen_x86_64::Emit_LoadFromRef_64_MemVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_LoadFromRef_64_MemVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	auto dstReg = CX86Assembler::rDX;
@@ -818,8 +818,8 @@ void CCodeGen_x86_64::Emit_LoadFromRef_64_MemVarAny(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_LoadFromRef_Ref_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto dstReg = PrepareRefSymbolRegisterDef(dst, CX86Assembler::rDX);
@@ -831,9 +831,9 @@ void CCodeGen_x86_64::Emit_LoadFromRef_Ref_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_LoadFromRef_Ref_VarVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 8);
@@ -845,8 +845,8 @@ void CCodeGen_x86_64::Emit_LoadFromRef_Ref_VarVarAny(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_StoreAtRef_64_VarMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto valueReg = CX86Assembler::rDX;
@@ -857,8 +857,8 @@ void CCodeGen_x86_64::Emit_StoreAtRef_64_VarMem(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_StoreAtRef_64_VarCst(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	WriteConstant64ToAddress(CX86Assembler::MakeIndRegAddress(addressReg), CX86Assembler::rDX, src2->GetConstant64());
@@ -866,9 +866,9 @@ void CCodeGen_x86_64::Emit_StoreAtRef_64_VarCst(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_StoreAtRef_64_VarAnyMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert((scale == 1) || (scale == 8));
@@ -881,9 +881,9 @@ void CCodeGen_x86_64::Emit_StoreAtRef_64_VarAnyMem(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_StoreAtRef_64_VarAnyCst(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert((scale == 1) || (scale == 8));
@@ -894,8 +894,8 @@ void CCodeGen_x86_64::Emit_StoreAtRef_64_VarAnyCst(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Store8AtRef_VarVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto valueReg = PrepareSymbolRegisterUse(src2, CX86Assembler::rDX);
@@ -904,9 +904,9 @@ void CCodeGen_x86_64::Emit_Store8AtRef_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_Store8AtRef_VarAnyVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	auto valueReg = PrepareSymbolRegisterUse(src3, CX86Assembler::rDX);
@@ -915,8 +915,8 @@ void CCodeGen_x86_64::Emit_Store8AtRef_VarAnyVar(const STATEMENT& statement)
 
 void CCodeGen_x86_64::Emit_CondJmp_Ref_VarCst(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	FRAMEWORK_MAYBE_UNUSED auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	FRAMEWORK_MAYBE_UNUSED auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 	assert(src2->m_valueLow == 0);

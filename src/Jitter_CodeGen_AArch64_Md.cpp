@@ -185,8 +185,8 @@ void CCodeGen_AArch64::MdBlendRegisters(CAArch64Assembler::REGISTERMD dstReg, CA
 template <typename MDOP>
 void CCodeGen_AArch64::Emit_Md_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -199,9 +199,9 @@ void CCodeGen_AArch64::Emit_Md_VarVar(const STATEMENT& statement)
 template <typename MDOP>
 void CCodeGen_AArch64::Emit_Md_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -215,9 +215,9 @@ void CCodeGen_AArch64::Emit_Md_VarVarVar(const STATEMENT& statement)
 template <typename MDOP>
 void CCodeGen_AArch64::Emit_Md_VarVarVarRev(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -231,9 +231,9 @@ void CCodeGen_AArch64::Emit_Md_VarVarVarRev(const STATEMENT& statement)
 template <typename MDSHIFTOP>
 void CCodeGen_AArch64::Emit_Md_Shift_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -245,8 +245,8 @@ void CCodeGen_AArch64::Emit_Md_Shift_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_ClampS_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -261,10 +261,10 @@ void CCodeGen_AArch64::Emit_Md_ClampS_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_MakeClip_VarVarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 
 	ResetTempRegisterMdState();
 
@@ -320,8 +320,8 @@ void CCodeGen_AArch64::Emit_Md_MakeClip_VarVarVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_MakeSz_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	ResetTempRegisterMdState();
 
@@ -352,8 +352,8 @@ void CCodeGen_AArch64::Emit_Md_MakeSz_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Mov_RegReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(!dst->Equals(src1));
 
@@ -362,24 +362,24 @@ void CCodeGen_AArch64::Emit_Md_Mov_RegReg(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Mov_RegMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	LoadMemory128InRegister(g_registersMd[dst->m_valueLow], src1);
 }
 
 void CCodeGen_AArch64::Emit_Md_Mov_MemReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	StoreRegisterInMemory128(dst, g_registersMd[src1->m_valueLow]);
 }
 
 void CCodeGen_AArch64::Emit_Md_Mov_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto tmpReg = GetNextTempRegisterMd();
 
@@ -389,8 +389,8 @@ void CCodeGen_AArch64::Emit_Md_Mov_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_LoadFromRef_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto addressReg = PrepareSymbolRegisterUseRef(src1, GetNextTempRegister64());
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
@@ -402,9 +402,9 @@ void CCodeGen_AArch64::Emit_Md_LoadFromRef_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_LoadFromRef_VarVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -427,8 +427,8 @@ void CCodeGen_AArch64::Emit_Md_LoadFromRef_VarVarAny(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_StoreAtRef_VarVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto addressReg = PrepareSymbolRegisterUseRef(src1, GetNextTempRegister64());
 	auto valueReg = PrepareSymbolRegisterUseMd(src2);
@@ -438,9 +438,9 @@ void CCodeGen_AArch64::Emit_Md_StoreAtRef_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_StoreAtRef_VarAnyVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -461,10 +461,10 @@ void CCodeGen_AArch64::Emit_Md_StoreAtRef_VarAnyVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_LoadFromRefMasked_VarVarAnyVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	auto mask = static_cast<uint8>(statement.jmpCondition);
 	uint8 scale = 1;
 
@@ -492,9 +492,9 @@ void CCodeGen_AArch64::Emit_Md_LoadFromRefMasked_VarVarAnyVar(const STATEMENT& s
 
 void CCodeGen_AArch64::Emit_Md_StoreAtRefMasked_VarAnyVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 mask = static_cast<uint8>(statement.jmpCondition);
 	uint8 scale = 1;
 
@@ -527,9 +527,9 @@ void CCodeGen_AArch64::Emit_Md_StoreAtRefMasked_VarAnyVar(const STATEMENT& state
 
 void CCodeGen_AArch64::Emit_Md_MovMasked_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->Equals(src1));
 
@@ -546,8 +546,8 @@ void CCodeGen_AArch64::Emit_Md_MovMasked_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Expand_VarReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 
@@ -558,8 +558,8 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarReg(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Expand_VarMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = GetNextTempRegister();
@@ -573,8 +573,8 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarMem(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Expand_VarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = GetNextTempRegister();
@@ -620,9 +620,9 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarCst(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Expand_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 	assert(src2->m_valueLow < 4);
@@ -637,9 +637,9 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_PackHB_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -663,9 +663,9 @@ void CCodeGen_AArch64::Emit_Md_PackHB_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_PackWH_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst);
 	auto src1Reg = PrepareSymbolRegisterUseMd(src1);
@@ -689,9 +689,9 @@ void CCodeGen_AArch64::Emit_Md_PackWH_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_MergeTo256_MemVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_TEMPORARY256);
 
@@ -709,9 +709,9 @@ void CCodeGen_AArch64::Emit_MergeTo256_MemVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Srl256_VarMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_TEMPORARY256);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -729,9 +729,9 @@ void CCodeGen_AArch64::Emit_Md_Srl256_VarMemCst(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Md_Srl256_VarMemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_TEMPORARY256);
 

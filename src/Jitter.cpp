@@ -13,7 +13,17 @@ CJitter::CJitter(CCodeGen* codeGen)
 
 CJitter::~CJitter()
 {
+	ClearSymbolRefs();
 	delete m_codeGen;
+}
+
+void CJitter::ClearSymbolRefs()
+{
+	for(auto* symbolRef : m_symbolRefs)
+	{
+		delete symbolRef;
+	}
+	m_symbolRefs.clear();
 }
 
 CCodeGen* CJitter::GetCodeGen()
@@ -33,6 +43,7 @@ void CJitter::Begin()
 	m_nextTemporary = 1;
 	m_nextBlockId = 1;
 	m_basicBlocks.clear();
+	ClearSymbolRefs();
 
 	StartBlock(m_nextBlockId++);
 }
@@ -44,6 +55,7 @@ void CJitter::End()
 	m_blockStarted = false;
 
 	Compile();
+	ClearSymbolRefs();
 }
 
 bool CJitter::IsStackEmpty() const

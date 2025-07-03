@@ -9,9 +9,9 @@ using namespace Jitter;
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Alu64_MemAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -25,9 +25,9 @@ void CCodeGen_Wasm::Emit_Alu64_MemAnyAny(const STATEMENT& statement)
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Shift64_MemAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -70,8 +70,8 @@ void CCodeGen_Wasm::PullTemporary64(CSymbol* symbol)
 
 void CCodeGen_Wasm::Emit_Mov64_MemAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -81,9 +81,9 @@ void CCodeGen_Wasm::Emit_Mov64_MemAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_MergeTo64_Mem64AnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 
@@ -110,9 +110,9 @@ void CCodeGen_Wasm::Emit_MergeTo64_Mem64AnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Cmp64_MemAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -151,7 +151,7 @@ void CCodeGen_Wasm::Emit_Cmp64_MemAnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_RetVal_Tmp64(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
 	PullTemporary64(dst);
 }
 

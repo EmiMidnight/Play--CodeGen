@@ -33,8 +33,8 @@ void CCodeGen_Wasm::MdBlendValues(uint8 mask)
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Md_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -48,9 +48,9 @@ void CCodeGen_Wasm::Emit_Md_MemMem(const STATEMENT& statement)
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Md_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -65,9 +65,9 @@ void CCodeGen_Wasm::Emit_Md_MemMemMem(const STATEMENT& statement)
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Md_Shift_MemMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -82,9 +82,9 @@ void CCodeGen_Wasm::Emit_Md_Shift_MemMemCst(const STATEMENT& statement)
 template <const uint8* SHUFFLE_PATTERN>
 void CCodeGen_Wasm::Emit_Md_Unpack_MemMemMemRev(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src2);
@@ -129,8 +129,8 @@ void CCodeGen_Wasm::PullTemporary128(CSymbol* symbol)
 
 void CCodeGen_Wasm::Emit_Md_Mov_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -140,9 +140,9 @@ void CCodeGen_Wasm::Emit_Md_Mov_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_AddSSW_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	//	This is based on code from http://locklessinc.com/articles/sat_arithmetic/ modified to work without cmovns
 	//	s32b sat_adds32b(s32b x, s32b y)
@@ -255,9 +255,9 @@ void CCodeGen_Wasm::Emit_Md_AddSSW_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_AddUSW_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	//	This is based on code from http://locklessinc.com/articles/sat_arithmetic/
 	//	u32b sat_addu32b(u32b x, u32b y)
@@ -302,9 +302,9 @@ void CCodeGen_Wasm::Emit_Md_AddUSW_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_SubSSW_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	//	This is based on code from http://locklessinc.com/articles/sat_arithmetic/ modified to work without cmovns
 	//	s32b sat_subs32b(s32b x, s32b y)
@@ -413,9 +413,9 @@ void CCodeGen_Wasm::Emit_Md_SubSSW_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_SubUSW_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	//	This is based on code from http://locklessinc.com/articles/sat_arithmetic/
 	//	u32b sat_subu32b(u32b x, u32b y)
@@ -460,8 +460,8 @@ void CCodeGen_Wasm::Emit_Md_SubUSW_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_ClampS_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -495,10 +495,10 @@ void CCodeGen_Wasm::Emit_Md_ClampS_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_MakeClip_MemMemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 
 	// clang-format off
 	static const uint8 makeClipShufflePattern[0x10] =
@@ -548,8 +548,8 @@ void CCodeGen_Wasm::Emit_Md_MakeClip_MemMemMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_MakeSz_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	static const uint8 zeroConst[0x10] = {0};
 
@@ -600,8 +600,8 @@ void CCodeGen_Wasm::Emit_Md_MakeSz_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_LoadFromRef_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -616,9 +616,9 @@ void CCodeGen_Wasm::Emit_Md_LoadFromRef_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_LoadFromRef_MemMemAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	FRAMEWORK_MAYBE_UNUSED uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -639,8 +639,8 @@ void CCodeGen_Wasm::Emit_Md_LoadFromRef_MemMemAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_StoreAtRef_MemMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolUse(src1);
 	PrepareSymbolUse(src2);
@@ -653,9 +653,9 @@ void CCodeGen_Wasm::Emit_Md_StoreAtRef_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_StoreAtRef_MemAnyMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	FRAMEWORK_MAYBE_UNUSED uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -675,10 +675,10 @@ void CCodeGen_Wasm::Emit_Md_StoreAtRef_MemAnyMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_LoadFromRefMasked_MemMemAnyMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	auto mask = static_cast<uint8>(statement.jmpCondition);
 
 	PrepareSymbolDef(dst);
@@ -700,9 +700,9 @@ void CCodeGen_Wasm::Emit_Md_LoadFromRefMasked_MemMemAnyMem(const STATEMENT& stat
 
 void CCodeGen_Wasm::Emit_Md_StoreAtRefMasked_MemAnyMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	auto mask = static_cast<uint8>(statement.jmpCondition);
 
 	//Compute store address (for later)
@@ -741,9 +741,9 @@ void CCodeGen_Wasm::Emit_Md_StoreAtRefMasked_MemAnyMem(const STATEMENT& statemen
 
 void CCodeGen_Wasm::Emit_Md_MovMasked_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto mask = static_cast<uint8>(statement.jmpCondition);
 
@@ -758,8 +758,8 @@ void CCodeGen_Wasm::Emit_Md_MovMasked_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_Expand_MemAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -772,9 +772,9 @@ void CCodeGen_Wasm::Emit_Md_Expand_MemAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_Expand_MemMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 	assert(src2->m_valueLow < 4);
@@ -794,9 +794,9 @@ void CCodeGen_Wasm::Emit_Md_Expand_MemMemCst(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_Srl256_MemMemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto localIdx = GetTemporaryLocation(src1);
 
@@ -860,9 +860,9 @@ void CCodeGen_Wasm::Emit_Md_Srl256_MemMemVar(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Md_Srl256_MemMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto localIdx = GetTemporaryLocation(src1);
 	auto byteShiftAmount = (src2->m_valueLow & 0x7F) / 8;
@@ -890,9 +890,9 @@ void CCodeGen_Wasm::Emit_Md_Srl256_MemMemCst(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_MergeTo256_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto localIdx = GetTemporaryLocation(dst);
 

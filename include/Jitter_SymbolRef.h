@@ -10,7 +10,7 @@ namespace Jitter
 	public:
 		static constexpr int UNVERSIONED = -1;
 
-		CSymbolRef(const SymbolPtr& symbol, int version = UNVERSIONED)
+		CSymbolRef(SymbolPtr symbol, int version = UNVERSIONED)
 		    : m_symbol(symbol)
 		    , m_version(version)
 		{
@@ -18,7 +18,7 @@ namespace Jitter
 
 		SymbolPtr GetSymbol() const
 		{
-			return m_symbol.lock();
+			return m_symbol;
 		}
 
 		std::string ToString() const
@@ -29,7 +29,7 @@ namespace Jitter
 		bool Equals(CSymbolRef* symbolRef) const
 		{
 			if(!symbolRef) return false;
-			return (m_version == symbolRef->m_version) && GetSymbol()->Equals(symbolRef->GetSymbol().get());
+			return (m_version == symbolRef->m_version) && GetSymbol()->Equals(symbolRef->GetSymbol());
 		}
 
 		int GetVersion() const
@@ -43,17 +43,18 @@ namespace Jitter
 		}
 
 	private:
-		WeakSymbolPtr m_symbol;
+		SymbolPtr m_symbol;
 		int m_version = UNVERSIONED;
 	};
 
-	typedef std::shared_ptr<CSymbolRef> SymbolRefPtr;
+	typedef CSymbolRef* SymbolRefPtr;
 
 	FRAMEWORK_MAYBE_UNUSED
-	static CSymbol* dynamic_symbolref_cast(SYM_TYPE type, const SymbolRefPtr& symbolRef)
+	static CSymbol* dynamic_symbolref_cast(SYM_TYPE type, SymbolRefPtr symbolRef)
 	{
 		if(!symbolRef) return nullptr;
-		auto result = symbolRef->GetSymbol().get();
+		auto result = symbolRef->GetSymbol();
+		if(!result) return nullptr;
 		if(result->m_type != type) return nullptr;
 		return result;
 	}

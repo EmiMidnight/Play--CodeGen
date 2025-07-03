@@ -91,13 +91,13 @@ CMemoryFunction::CMemoryFunction(const void* code, size_t size)
 : m_code(nullptr)
 {
 #if defined(MEMFUNC_USE_WIN32)
-	m_size = size;
-	m_code = framework_aligned_alloc(size, BLOCK_ALIGN);
-	memcpy(m_code, code, size);
-	
-	DWORD oldProtect = 0;
-	BOOL result = VirtualProtect(m_code, size, PAGE_EXECUTE_READWRITE, &oldProtect);
-	assert(result == TRUE);
+    size_t alignedSize = (size + BLOCK_ALIGN - 1) & ~(BLOCK_ALIGN - 1);
+    m_size = alignedSize;
+    
+    m_code = VirtualAlloc(nullptr, alignedSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+    assert(m_code != nullptr);
+    
+    memcpy(m_code, code, size);
 #elif defined(MEMFUNC_USE_MACHVM)
 	vm_size_t page_size = 0;
 	host_page_size(mach_task_self(), &page_size);
@@ -160,7 +160,7 @@ void CMemoryFunction::Reset()
 	if(m_code != nullptr)
 	{
 #if defined(MEMFUNC_USE_WIN32)
-		framework_aligned_free(m_code);
+		VirtualFree(m_code, 0, MEM_RELEASE);
 #elif defined(MEMFUNC_USE_MACHVM)
 		vm_deallocate(mach_task_self(), reinterpret_cast<vm_address_t>(m_code), m_size);
 #elif defined(MEMFUNC_USE_MMAP)

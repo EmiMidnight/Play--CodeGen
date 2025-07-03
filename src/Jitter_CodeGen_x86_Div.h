@@ -3,9 +3,9 @@
 template <bool isSigned>
 void CCodeGen_x86::Emit_DivMem64VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	m_assembler.MovEd(CX86Assembler::rAX, MakeVariableSymbolAddress(src1));
 	if(isSigned)
@@ -25,9 +25,9 @@ void CCodeGen_x86::Emit_DivMem64VarVar(const STATEMENT& statement)
 template <bool isSigned>
 void CCodeGen_x86::Emit_DivMem64VarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 
@@ -50,9 +50,9 @@ void CCodeGen_x86::Emit_DivMem64VarCst(const STATEMENT& statement)
 template <bool isSigned>
 void CCodeGen_x86::Emit_DivMem64CstVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT);
 

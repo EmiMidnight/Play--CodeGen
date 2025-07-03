@@ -7,8 +7,8 @@ using namespace Jitter;
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Fpu_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -21,9 +21,9 @@ void CCodeGen_Wasm::Emit_Fpu_MemMem(const STATEMENT& statement)
 template <uint32 OP>
 void CCodeGen_Wasm::Emit_Fpu_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -65,9 +65,9 @@ void CCodeGen_Wasm::PullTemporaryFp32(CSymbol* symbol)
 
 void CCodeGen_Wasm::Emit_Fp_Cmp_AnyMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -97,8 +97,8 @@ void CCodeGen_Wasm::Emit_Fp_Cmp_AnyMemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Fp_Rcpl_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 
@@ -114,8 +114,8 @@ void CCodeGen_Wasm::Emit_Fp_Rcpl_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Fp_Rsqrt_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 
@@ -133,8 +133,8 @@ void CCodeGen_Wasm::Emit_Fp_Rsqrt_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Fp_Clamp_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 
@@ -178,8 +178,8 @@ void CCodeGen_Wasm::Emit_Fp_Clamp_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Fp_ToSingleI32_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_FP_RELATIVE32);
 
@@ -198,8 +198,8 @@ void CCodeGen_Wasm::Emit_Fp_ToSingleI32_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Fp_ToInt32TruncS_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_RELATIVE32);
 
@@ -217,8 +217,8 @@ void CCodeGen_Wasm::Emit_Fp_ToInt32TruncS_MemMem(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Fp_LdCst_TmpCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_TEMPORARY32);
 	assert(src1->m_type == SYM_CONSTANT);

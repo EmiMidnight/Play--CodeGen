@@ -23,8 +23,8 @@ void CCodeGen_x86::CommitSymbolRegisterFp32Sse(CSymbol* symbol, CX86Assembler::X
 template <typename FPUOP>
 void CCodeGen_x86::Emit_Fp32_RegVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	((m_assembler).*(FPUOP::OpEd()))(m_mdRegisters[dst->m_valueLow], MakeVariableFp32SymbolAddress(src1));
 }
@@ -32,8 +32,8 @@ void CCodeGen_x86::Emit_Fp32_RegVar(const STATEMENT& statement)
 template <typename FPOP>
 void CCodeGen_x86::Emit_Fp32_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = CX86Assembler::xMM0;
 
@@ -44,9 +44,9 @@ void CCodeGen_x86::Emit_Fp32_MemVar(const STATEMENT& statement)
 template <typename FPOP>
 void CCodeGen_x86::Emit_Fp32_RegRegReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	if(dst->Equals(src1))
 	{
@@ -71,9 +71,9 @@ void CCodeGen_x86::Emit_Fp32_RegRegReg(const STATEMENT& statement)
 template <typename FPOP>
 void CCodeGen_x86::Emit_Fp32_RegMemReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = m_mdRegisters[dst->m_valueLow];
 	auto src2Register = m_mdRegisters[src2->m_valueLow];
@@ -91,9 +91,9 @@ void CCodeGen_x86::Emit_Fp32_RegMemReg(const STATEMENT& statement)
 template <typename FPOP>
 void CCodeGen_x86::Emit_Fp32_RegVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	//If we get in here, it must absolutely mean that the second source isn't a register
 	//Otherwise, some of the assumuptions done below will be wrong (dst mustn't be equal to src2)
@@ -112,9 +112,9 @@ void CCodeGen_x86::Emit_Fp32_RegVarVar(const STATEMENT& statement)
 template <typename FPUOP>
 void CCodeGen_x86::Emit_Fp32_MemVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = CX86Assembler::xMM0;
 
@@ -126,8 +126,8 @@ void CCodeGen_x86::Emit_Fp32_MemVarVar(const STATEMENT& statement)
 template <typename MDOPSINGLEOP>
 void CCodeGen_x86::Emit_Fp32_SingleOp_RegVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto resultRegister = m_mdRegisters[dst->m_valueLow];
 
@@ -142,8 +142,8 @@ void CCodeGen_x86::Emit_Fp32_SingleOp_RegVar(const STATEMENT& statement)
 template <typename MDOPSINGLEOP>
 void CCodeGen_x86::Emit_Fp32_SingleOp_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto resultRegister = CX86Assembler::xMM0;
 
@@ -154,8 +154,8 @@ void CCodeGen_x86::Emit_Fp32_SingleOp_MemVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp32_Mov_RegMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_REGISTER32);
 
@@ -164,8 +164,8 @@ void CCodeGen_x86::Emit_Fp32_Mov_RegMem(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp32_Mov_MemReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_FP_REGISTER32);
 
@@ -174,8 +174,8 @@ void CCodeGen_x86::Emit_Fp32_Mov_MemReg(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp32_LdCst_RegCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_REGISTER32);
 	assert(src1->m_type == SYM_CONSTANT);
@@ -188,9 +188,9 @@ void CCodeGen_x86::Emit_Fp32_LdCst_RegCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_CmpS_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDef(dst, CX86Assembler::rAX);
 
@@ -204,9 +204,9 @@ void CCodeGen_x86::Emit_Fp_CmpS_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_CmpS_VarMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 
@@ -236,8 +236,8 @@ void CCodeGen_x86::Emit_Fp_CmpS_VarMemCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_RsqrtS_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto tmpIntRegister = CX86Assembler::rAX;
 	auto dstRegister = PrepareSymbolRegisterDefFp32(dst, CX86Assembler::xMM0);
@@ -253,8 +253,8 @@ void CCodeGen_x86::Emit_Fp_RsqrtS_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_RcplS_RegVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_REGISTER32);
 
@@ -278,8 +278,8 @@ void CCodeGen_x86::Emit_Fp_RcplS_RegVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_RcplS_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto tmpIntRegister = CX86Assembler::rAX;
 	auto dstRegister = CX86Assembler::xMM0;
@@ -292,8 +292,8 @@ void CCodeGen_x86::Emit_Fp_RcplS_MemVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_ClampS_RegVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = m_mdRegisters[dst->m_valueLow];
 
@@ -308,8 +308,8 @@ void CCodeGen_x86::Emit_Fp_ClampS_RegVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_ClampS_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = CX86Assembler::xMM0;
 
@@ -321,8 +321,8 @@ void CCodeGen_x86::Emit_Fp_ClampS_MemVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_ToSingleI32_VarReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_FP_REGISTER32);
 
@@ -337,8 +337,8 @@ void CCodeGen_x86::Emit_Fp_ToSingleI32_VarReg(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_ToSingleI32_VarMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefFp32(dst, CX86Assembler::xMM0);
 
@@ -349,8 +349,8 @@ void CCodeGen_x86::Emit_Fp_ToSingleI32_VarMem(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_ToInt32TruncS_RegVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_REGISTER32);
 
@@ -362,8 +362,8 @@ void CCodeGen_x86::Emit_Fp_ToInt32TruncS_RegVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_ToInt32TruncS_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto tmpIntRegister = CX86Assembler::rAX;
 
@@ -373,7 +373,7 @@ void CCodeGen_x86::Emit_Fp_ToInt32TruncS_MemVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_Sse_SetRoundingMode_Cst(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	uint32 mxcsrRoundBits = g_fpMxcsrRoundBits[src1->m_valueLow];
 

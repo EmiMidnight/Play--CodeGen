@@ -4,9 +4,9 @@
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegRegReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src1->m_type == SYM_REGISTER);
@@ -25,9 +25,9 @@ void CCodeGen_x86::Emit_Shift_RegRegReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegRegMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src1->m_type == SYM_REGISTER);
@@ -45,9 +45,9 @@ void CCodeGen_x86::Emit_Shift_RegRegMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegRegCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src1->m_type == SYM_REGISTER);
@@ -63,9 +63,9 @@ void CCodeGen_x86::Emit_Shift_RegRegCst(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegMemReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_REGISTER);
@@ -78,9 +78,9 @@ void CCodeGen_x86::Emit_Shift_RegMemReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegMemMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 
@@ -92,9 +92,9 @@ void CCodeGen_x86::Emit_Shift_RegMemMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegMemCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -106,9 +106,9 @@ void CCodeGen_x86::Emit_Shift_RegMemCst(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegCstReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src1->m_type == SYM_CONSTANT);
@@ -122,9 +122,9 @@ void CCodeGen_x86::Emit_Shift_RegCstReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_RegCstMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src1->m_type == SYM_CONSTANT);
@@ -137,9 +137,9 @@ void CCodeGen_x86::Emit_Shift_RegCstMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemRegReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_REGISTER);
@@ -153,9 +153,9 @@ void CCodeGen_x86::Emit_Shift_MemRegReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemRegMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_REGISTER);
 
@@ -168,9 +168,9 @@ void CCodeGen_x86::Emit_Shift_MemRegMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemRegCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -183,9 +183,9 @@ void CCodeGen_x86::Emit_Shift_MemRegCst(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemMemReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_REGISTER);
 
@@ -206,9 +206,9 @@ void CCodeGen_x86::Emit_Shift_MemMemReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemMemMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	m_assembler.MovEd(CX86Assembler::rCX, MakeMemorySymbolAddress(src2));
 
@@ -227,9 +227,9 @@ void CCodeGen_x86::Emit_Shift_MemMemMem(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemMemCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 
@@ -248,9 +248,9 @@ void CCodeGen_x86::Emit_Shift_MemMemCst(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemCstReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT);
 	assert(src2->m_type == SYM_REGISTER);
@@ -264,9 +264,9 @@ void CCodeGen_x86::Emit_Shift_MemCstReg(const STATEMENT& statement)
 template <typename SHIFTOP>
 void CCodeGen_x86::Emit_Shift_MemCstMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT);
 

@@ -107,8 +107,8 @@ void CCodeGen_AArch32::StoreRegisterInTemporaryFp32(CTempRegisterContext& tempRe
 template <typename FPUOP>
 void CCodeGen_AArch32::Emit_Fpu_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -120,9 +120,9 @@ void CCodeGen_AArch32::Emit_Fpu_MemMem(const STATEMENT& statement)
 template <typename FPUOP>
 void CCodeGen_AArch32::Emit_Fpu_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -135,9 +135,9 @@ void CCodeGen_AArch32::Emit_Fpu_MemMemMem(const STATEMENT& statement)
 template <typename FPUMDOP>
 void CCodeGen_AArch32::Emit_FpuMd_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -149,8 +149,8 @@ void CCodeGen_AArch32::Emit_FpuMd_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_Rcpl_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -163,8 +163,8 @@ void CCodeGen_AArch32::Emit_Fp_Rcpl_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_Rsqrt_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -178,8 +178,8 @@ void CCodeGen_AArch32::Emit_Fp_Rsqrt_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_Clamp_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 	auto cstAddrReg = tempRegisterContext.Allocate();
@@ -200,9 +200,9 @@ void CCodeGen_AArch32::Emit_Fp_Clamp_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_Cmp_AnyMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -239,8 +239,8 @@ void CCodeGen_AArch32::Emit_Fp_Cmp_AnyMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_ToSingleI32_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -254,8 +254,8 @@ void CCodeGen_AArch32::Emit_Fp_ToSingleI32_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_ToInt32TruncS_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	CTempRegisterContext tempRegisterContext;
 
@@ -269,8 +269,8 @@ void CCodeGen_AArch32::Emit_Fp_ToInt32TruncS_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Fp_LdCst_TmpCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_TEMPORARY32);
 	assert(src1->m_type == SYM_CONSTANT);

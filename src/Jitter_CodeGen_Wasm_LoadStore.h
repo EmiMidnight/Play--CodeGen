@@ -3,8 +3,8 @@
 template <uint8 inst, uint8 align>
 void CCodeGen_Wasm::Emit_Generic_LoadFromRef_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -19,9 +19,9 @@ void CCodeGen_Wasm::Emit_Generic_LoadFromRef_MemVar(const STATEMENT& statement)
 template <uint8 inst, uint8 align>
 void CCodeGen_Wasm::Emit_Generic_LoadFromRef_MemVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	FRAMEWORK_MAYBE_UNUSED uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -42,8 +42,8 @@ void CCodeGen_Wasm::Emit_Generic_LoadFromRef_MemVarAny(const STATEMENT& statemen
 template <uint8 inst, uint8 align>
 void CCodeGen_Wasm::Emit_Generic_StoreAtRef_VarAny(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolUse(src1);
 	PrepareSymbolUse(src2);
@@ -56,9 +56,9 @@ void CCodeGen_Wasm::Emit_Generic_StoreAtRef_VarAny(const STATEMENT& statement)
 template <uint8 inst, uint8 align>
 void CCodeGen_Wasm::Emit_Generic_StoreAtRef_VarAnyAny(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	FRAMEWORK_MAYBE_UNUSED uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);

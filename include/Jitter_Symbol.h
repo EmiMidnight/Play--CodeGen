@@ -186,10 +186,7 @@ namespace Jitter
 
 		bool Equals(CSymbol* symbol) const
 		{
-			return (symbol) &&
-			       (symbol->m_type == m_type) &&
-			       (symbol->m_valueLow == m_valueLow) &&
-			       (symbol->m_valueHigh == m_valueHigh);
+			return (symbol) && (symbol->m_value64 == m_value64) && (symbol->m_type == m_type);
 		}
 
 		uint64 GetConstant64() const
@@ -201,9 +198,9 @@ namespace Jitter
 		uintptr_t GetConstantPtr() const
 		{
 			assert(m_type == SYM_CONSTANTPTR);
-#if(UINTPTR_MAX == UINT32_MAX)
+#if (UINTPTR_MAX == UINT32_MAX)
 			return m_valueLow;
-#elif(UINTPTR_MAX == UINT64_MAX)
+#elif (UINTPTR_MAX == UINT64_MAX)
 			return m_value64;
 #else
 			static_assert(false, "Unsupported pointer size.");
@@ -212,14 +209,56 @@ namespace Jitter
 
 		bool Aliases(CSymbol* symbol) const
 		{
-			if(!IsRelative()) return false;
-			if(!symbol->IsRelative()) return false;
-			//Symbol alias each other if their memory ranges overlap
-			uint32 start1 = m_valueLow;
-			uint32 start2 = symbol->m_valueLow;
-			uint32 end1 = start1 + GetSize();
-			uint32 end2 = start2 + symbol->GetSize();
-			return (start1 < end2) && (start2 < end1);
+			if((m_type != SYM_RELATIVE && m_type != SYM_RELATIVE64 && m_type != SYM_RELATIVE128 && m_type != SYM_REL_REFERENCE && m_type != SYM_FP_RELATIVE32) ||
+			   (symbol->m_type != SYM_RELATIVE && symbol->m_type != SYM_RELATIVE64 && symbol->m_type != SYM_RELATIVE128 && symbol->m_type != SYM_REL_REFERENCE && symbol->m_type != SYM_FP_RELATIVE32))
+			{
+				return false;
+			}
+
+			uint32 size1, size2;
+			switch(m_type)
+			{
+			case SYM_RELATIVE:
+			case SYM_FP_RELATIVE32:
+				size1 = 4;
+				break;
+			case SYM_RELATIVE64:
+				size1 = 8;
+				break;
+			case SYM_RELATIVE128:
+				size1 = 16;
+				break;
+			case SYM_REL_REFERENCE:
+				size1 = sizeof(void*);
+				break;
+			default:
+				size1 = 4;
+				break;
+			}
+
+			switch(symbol->m_type)
+			{
+			case SYM_RELATIVE:
+			case SYM_FP_RELATIVE32:
+				size2 = 4;
+				break;
+			case SYM_RELATIVE64:
+				size2 = 8;
+				break;
+			case SYM_RELATIVE128:
+				size2 = 16;
+				break;
+			case SYM_REL_REFERENCE:
+				size2 = sizeof(void*);
+				break;
+			default:
+				size2 = 4;
+				break;
+			}
+
+			uint32 end1 = m_valueLow + size1;
+			uint32 end2 = symbol->m_valueLow + size2;
+			return (m_valueLow < end2) && (symbol->m_valueLow < end1);
 		}
 
 		SYM_TYPE m_type;
@@ -236,14 +275,13 @@ namespace Jitter
 		unsigned int m_stackLocation = -1;
 	};
 
-	typedef std::shared_ptr<CSymbol> SymbolPtr;
-	typedef std::weak_ptr<CSymbol> WeakSymbolPtr;
+	typedef CSymbol* SymbolPtr;
 
 	struct SymbolComparator
 	{
 		bool operator()(const SymbolPtr& sym1, const SymbolPtr& sym2) const
 		{
-			return sym1->Equals(sym2.get());
+			return sym1->Equals(sym2);
 		}
 	};
 

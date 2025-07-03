@@ -34,17 +34,21 @@ CJitter::VERSIONED_STATEMENT_LIST CJitter::GenerateVersionedStatementList(const 
 
 	struct ReplaceUse
 	{
+		CJitter* jitter;
+		
+		ReplaceUse(CJitter* j) : jitter(j) {}
+		
 		void operator()(SymbolRefPtr& symbolRef, CRelativeVersionManager& relativeVersions) const
 		{
 			if(CSymbol* symbol = dynamic_symbolref_cast(SYM_RELATIVE, symbolRef))
 			{
 				unsigned int currentVersion = relativeVersions.GetRelativeVersion(symbol->m_valueLow);
-				symbolRef = std::make_shared<CSymbolRef>(symbolRef->GetSymbol(), currentVersion);
+				symbolRef = jitter->MakeSymbolRef(symbolRef->GetSymbol(), currentVersion);
 			}
 			else if(CSymbol* symbol = dynamic_symbolref_cast(SYM_REL_REFERENCE, symbolRef))
 			{
 				unsigned int currentVersion = relativeVersions.GetRelativeVersion(symbol->m_valueLow);
-				symbolRef = std::make_shared<CSymbolRef>(symbolRef->GetSymbol(), currentVersion);
+				symbolRef = jitter->MakeSymbolRef(symbolRef->GetSymbol(), currentVersion);
 			}
 			else if(CSymbol* symbol = dynamic_symbolref_cast(SYM_RELATIVE64, symbolRef))
 			{
@@ -53,12 +57,12 @@ CJitter::VERSIONED_STATEMENT_LIST CJitter::GenerateVersionedStatementList(const 
 				unsigned int currentVersion =
 				    relativeVersions.GetRelativeVersion(symbol->m_valueLow + 0x0) +
 				    relativeVersions.GetRelativeVersion(symbol->m_valueLow + 0x4);
-				symbolRef = std::make_shared<CSymbolRef>(symbolRef->GetSymbol(), currentVersion);
+				symbolRef = jitter->MakeSymbolRef(symbolRef->GetSymbol(), currentVersion);
 			}
 			else if(CSymbol* symbol = dynamic_symbolref_cast(SYM_FP_RELATIVE32, symbolRef))
 			{
 				unsigned int currentVersion = relativeVersions.GetRelativeVersion(symbol->m_valueLow);
-				symbolRef = std::make_shared<CSymbolRef>(symbolRef->GetSymbol(), currentVersion);
+				symbolRef = jitter->MakeSymbolRef(symbolRef->GetSymbol(), currentVersion);
 			}
 			else if(CSymbol* symbol = dynamic_symbolref_cast(SYM_RELATIVE128, symbolRef))
 			{
@@ -69,21 +73,23 @@ CJitter::VERSIONED_STATEMENT_LIST CJitter::GenerateVersionedStatementList(const 
 				    relativeVersions.GetRelativeVersion(symbol->m_valueLow + 0x4) +
 				    relativeVersions.GetRelativeVersion(symbol->m_valueLow + 0x8) +
 				    relativeVersions.GetRelativeVersion(symbol->m_valueLow + 0xC);
-				symbolRef = std::make_shared<CSymbolRef>(symbolRef->GetSymbol(), currentVersion);
+				symbolRef = jitter->MakeSymbolRef(symbolRef->GetSymbol(), currentVersion);
 			}
 		}
 	};
 
+	ReplaceUse replaceUse(this);
+
 	for(auto newStatement : statements)
 	{
-		ReplaceUse()(newStatement.src1, result.relativeVersions);
-		ReplaceUse()(newStatement.src2, result.relativeVersions);
-		ReplaceUse()(newStatement.src3, result.relativeVersions);
+		replaceUse(newStatement.src1, result.relativeVersions);
+		replaceUse(newStatement.src2, result.relativeVersions);
+		replaceUse(newStatement.src3, result.relativeVersions);
 
 		if(auto dst = dynamic_symbolref_cast(SYM_RELATIVE, newStatement.dst))
 		{
 			unsigned int nextVersion = result.relativeVersions.IncrementRelativeVersion(dst->m_valueLow);
-			newStatement.dst = std::make_shared<CSymbolRef>(newStatement.dst->GetSymbol(), nextVersion);
+			newStatement.dst = MakeSymbolRef(newStatement.dst->GetSymbol(), nextVersion);
 		}
 		//Increment relative versions to prevent some optimization problems
 		else if(auto dst = dynamic_symbolref_cast(SYM_REL_REFERENCE, newStatement.dst))
@@ -125,10 +131,10 @@ StatementList CJitter::CollapseVersionedStatementList(const VERSIONED_STATEMENT_
 	for(auto newStatement : statements.statements)
 	{
 		newStatement.VisitOperands(
-		    [](SymbolRefPtr& symbolRef, bool) {
+		    [this](SymbolRefPtr& symbolRef, bool) {
 			    if(symbolRef->IsVersioned())
 			    {
-				    symbolRef = std::make_shared<CSymbolRef>(symbolRef->GetSymbol());
+				    symbolRef = MakeSymbolRef(symbolRef->GetSymbol());
 			    }
 		    });
 
@@ -251,14 +257,23 @@ SymbolPtr CJitter::MakeSymbol(BASIC_BLOCK* basicBlock, SYM_TYPE type, uint32 val
 	return currentSymbolTable.MakeSymbol(type, valueLo, valueHi);
 }
 
-SymbolRefPtr CJitter::MakeSymbolRef(const SymbolPtr& symbol)
+SymbolRefPtr CJitter::MakeSymbolRef(SymbolPtr symbol)
 {
-	return std::make_shared<CSymbolRef>(symbol);
+	auto* symbolRef = new CSymbolRef(symbol);
+	m_symbolRefs.push_back(symbolRef);
+	return symbolRef;
 }
 
-int CJitter::GetSymbolSize(const SymbolRefPtr& symbolRef)
+SymbolRefPtr CJitter::MakeSymbolRef(SymbolPtr symbol, int version)
 {
-	return symbolRef->GetSymbol().get()->GetSize();
+	auto* symbolRef = new CSymbolRef(symbol, version);
+	m_symbolRefs.push_back(symbolRef);
+	return symbolRef;
+}
+
+int CJitter::GetSymbolSize(SymbolRefPtr symbolRef)
+{
+	return symbolRef->GetSymbol()->GetSize();
 }
 
 bool CJitter::FoldConstantOperation(STATEMENT& statement)
@@ -280,20 +295,20 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow + src2cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src1cst && src1cst->m_valueLow == 0)
 		{
 			statement.op = OP_MOV;
 			statement.src1 = statement.src2;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && src2cst->m_valueLow == 0)
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -305,13 +320,13 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow - src2cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && src2cst->m_valueLow == 0)
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -323,7 +338,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow & src2cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(
@@ -333,14 +348,14 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			//Anding with zero
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, 0));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && src2cst->m_valueLow == ~0)
 		{
 			//Anding with ~0
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -351,7 +366,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow | src2cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src1cst && src1cst->m_valueLow == 0)
@@ -359,14 +374,14 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			//Oring with zero
 			statement.op = OP_MOV;
 			std::swap(statement.src1, statement.src2);
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && src2cst->m_valueLow == 0)
 		{
 			//Oring with zero
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -377,7 +392,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow ^ src2cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src1cst && src1cst->m_valueLow == 0)
@@ -385,14 +400,14 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			//Xoring with zero
 			statement.op = OP_MOV;
 			std::swap(statement.src1, statement.src2);
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && src2cst->m_valueLow == 0)
 		{
 			//Xoring with zero
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -403,7 +418,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = ~src1cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -414,13 +429,13 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = static_cast<int32>(src1cst->m_valueLow) >> static_cast<int32>(src2cst->m_valueLow & 0x1F);
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && ((src2cst->m_valueLow & 0x1F) == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -431,13 +446,13 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow >> (src2cst->m_valueLow & 0x1F);
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && ((src2cst->m_valueLow & 0x1F) == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -448,13 +463,13 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 result = src1cst->m_valueLow << (src2cst->m_valueLow & 0x1F);
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && ((src2cst->m_valueLow & 0x1F) == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -474,7 +489,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			}
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -485,7 +500,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint64 result = static_cast<uint64>(src1cst->m_valueLow) | (static_cast<uint64>(src2cst->m_valueLow) << 32);
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -496,7 +511,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint64 result = static_cast<uint64>(src1cst->m_valueLow) * static_cast<uint64>(src2cst->m_valueLow);
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -507,7 +522,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			int64 result = static_cast<int64>(static_cast<int32>(src1cst->m_valueLow)) * static_cast<int64>(static_cast<int32>(src2cst->m_valueLow));
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(static_cast<uint64>(result)));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -528,7 +543,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			}
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		//else if(src2cst && IsPowerOfTwo(src2cst->m_valueLow))
@@ -554,7 +569,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			}
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -602,7 +617,7 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			changed = true;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result ? 1 : 0));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 		}
 	}
 	else if(statement.op == OP_SELECT)
@@ -613,8 +628,8 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			uint32 value = src2cst->m_valueLow;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, value));
-			statement.src2.reset();
-			statement.src3.reset();
+			statement.src2 = nullptr;
+			statement.src3 = nullptr;
 			changed = true;
 		}
 	}
@@ -656,8 +671,8 @@ bool CJitter::FoldConstantOperation(STATEMENT& statement)
 			{
 				statement.op = OP_NOP;
 			}
-			statement.src1.reset();
-			statement.src2.reset();
+			statement.src1 = nullptr;
+			statement.src2 = nullptr;
 		}
 	}
 
@@ -701,13 +716,13 @@ bool CJitter::FoldConstant64Operation(STATEMENT& statement)
 			uint64 result = cst1 + cst2;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src2cst && (src2cst->m_valueLow == 0) && (src2cst->m_valueHigh == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -720,7 +735,7 @@ bool CJitter::FoldConstant64Operation(STATEMENT& statement)
 			uint64 result = cst1 - cst2;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -733,7 +748,7 @@ bool CJitter::FoldConstant64Operation(STATEMENT& statement)
 			uint64 result = cst1 & cst2;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(result));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(
@@ -743,7 +758,7 @@ bool CJitter::FoldConstant64Operation(STATEMENT& statement)
 			//ANDing anything with 0 gives 0
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeConstant64(0));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -782,7 +797,7 @@ bool CJitter::FoldConstant64Operation(STATEMENT& statement)
 			changed = true;
 			statement.op = OP_MOV;
 			statement.src1 = MakeSymbolRef(MakeSymbol(SYM_CONSTANT, result ? 1 : 0));
-			statement.src2.reset();
+			statement.src2 = nullptr;
 		}
 	}
 
@@ -794,7 +809,7 @@ bool CJitter::FoldConstant64Operation(STATEMENT& statement)
 bool CJitter::FoldConstant6432Operation(STATEMENT& statement)
 {
 	CSymbol* src1cst = dynamic_symbolref_cast(SYM_CONSTANT64, statement.src1);
-	CSymbol* src2cst = dynamic_symbolref_cast(SYM_CONSTANT, statement.src2);
+	CSymbol* src2cst = dynamic_symbolref_cast(SYM_CONSTANT64, statement.src2);
 
 	//Nothing we can do
 	if(src1cst == NULL && src2cst == NULL) return false;
@@ -809,13 +824,13 @@ bool CJitter::FoldConstant6432Operation(STATEMENT& statement)
 		if(src2cst && ((src2cst->m_valueLow & 0x3F) == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 		else if(src1cst && (src1cst->m_valueLow == 0) && (src1cst->m_valueHigh == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -840,7 +855,7 @@ bool CJitter::FoldConstant12832Operation(STATEMENT& statement)
 		if(src2cst && ((src2cst->m_valueLow & 0xF) == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -852,7 +867,7 @@ bool CJitter::FoldConstant12832Operation(STATEMENT& statement)
 		if(src2cst && ((src2cst->m_valueLow & 0x1F) == 0))
 		{
 			statement.op = OP_MOV;
-			statement.src2.reset();
+			statement.src2 = nullptr;
 			changed = true;
 		}
 	}
@@ -911,9 +926,9 @@ void CJitter::MergeBasicBlocks(BASIC_BLOCK& dstBlock, const BASIC_BLOCK& srcBloc
 	for(auto statement : srcBlock.statements)
 	{
 		statement.VisitOperands(
-		    [&dstSymbolTable](SymbolRefPtr& symbolRef, bool) {
+		    [this, &dstSymbolTable](SymbolRefPtr& symbolRef, bool) {
 			    auto symbol = symbolRef->GetSymbol();
-			    symbolRef = std::make_shared<CSymbolRef>(dstSymbolTable.MakeSymbol(symbol));
+			    symbolRef = MakeSymbolRef(dstSymbolTable.MakeSymbol(symbol));
 		    });
 		dstBlock.statements.push_back(statement);
 	}
@@ -1146,7 +1161,7 @@ bool CJitter::ConstantPropagation(StatementList& statements)
 
 			innerStatement.VisitSources(
 			    [&](SymbolRefPtr& symbol, bool) {
-				    if(symbol->Equals(outerStatement.dst.get()))
+				    if(symbol->Equals(outerStatement.dst))
 				    {
 					    symbol = outerStatement.src1;
 					    changed = true;
@@ -1170,7 +1185,7 @@ bool CJitter::ReorderAdd(StatementList& statements)
 		if(statement.op != OP_ADD) continue;
 
 		//Do some more checks
-		auto addDst = statement.dst.get();
+		auto addDst = statement.dst;
 		assert(addDst);
 
 		auto addSrc2Cst = dynamic_symbolref_cast(SYM_CONSTANT, statement.src2);
@@ -1237,7 +1252,7 @@ bool CJitter::CopyPropagation(StatementList& statements)
 		//Some operations we can't propagate
 		if(outerStatement.op == OP_RETVAL) continue;
 
-		CSymbolRef* outerDstSymbol = outerStatement.dst.get();
+		CSymbolRef* outerDstSymbol = outerStatement.dst;
 		if(outerDstSymbol == NULL) continue;
 
 		//Don't mess with relatives
@@ -1318,6 +1333,8 @@ bool CJitter::CommonExpressionElimination(VERSIONED_STATEMENT_LIST& versionedSta
 	bool changed = false;
 	std::vector<StatementList::const_iterator> tempDefs;
 	std::unordered_map<SymbolPtr, SymbolPtr> tempReplaceMap;
+	tempReplaceMap.reserve(128);
+	tempDefs.reserve(128);
 	tempDefs.reserve(versionedStatementList.statements.size());
 
 	for(auto statementIterator(versionedStatementList.statements.begin());
@@ -1342,9 +1359,9 @@ bool CJitter::CommonExpressionElimination(VERSIONED_STATEMENT_LIST& versionedSta
 				const auto& temp = tempDefStatement.dst;
 				if(statement.op != tempDefStatement.op) continue;
 				if(statement.jmpCondition != tempDefStatement.jmpCondition) continue;
-				if(statement.src1 && !statement.src1->Equals(tempDefStatement.src1.get())) continue;
-				if(statement.src2 && !statement.src2->Equals(tempDefStatement.src2.get())) continue;
-				if(statement.src3 && !statement.src3->Equals(tempDefStatement.src3.get())) continue;
+				if(statement.src1 && !statement.src1->Equals(tempDefStatement.src1)) continue;
+				if(statement.src2 && !statement.src2->Equals(tempDefStatement.src2)) continue;
+				if(statement.src3 && !statement.src3->Equals(tempDefStatement.src3)) continue;
 				auto [_, inserted] = tempReplaceMap.insert(std::make_pair(newTemp, temp->GetSymbol()));
 				assert(inserted);
 				found = true;
@@ -1444,7 +1461,7 @@ bool CJitter::MergeCmpSelectOps(StatementList& statements)
 
 		auto predicateSymbol = statement.dst;
 
-		if(!nextStatement.src1->Equals(predicateSymbol.get())) continue;
+		if(!nextStatement.src1->Equals(predicateSymbol)) continue;
 
 		auto innerStatementIterator = nextStatementIterator;
 		innerStatementIterator++;
@@ -1454,7 +1471,7 @@ bool CJitter::MergeCmpSelectOps(StatementList& statements)
 		for(; innerStatementIterator != statements.end(); ++innerStatementIterator)
 		{
 			const auto& innerStatement = *innerStatementIterator;
-			innerStatement.VisitSources([&](const SymbolRefPtr& src, bool isDst) { used |= src->Equals(predicateSymbol.get()); });
+			innerStatement.VisitSources([&](const SymbolRefPtr& src, bool isDst) { used |= src->Equals(predicateSymbol); });
 			if(used) break;
 		}
 
@@ -1464,11 +1481,11 @@ bool CJitter::MergeCmpSelectOps(StatementList& statements)
 		nextStatement.jmpCondition = statement.jmpCondition;
 		nextStatement.src1 = nextStatement.src2;
 		nextStatement.src2 = nextStatement.src3;
-		nextStatement.src3.reset();
+		nextStatement.src3 = nullptr;
 
 		statement.op = OP_CMPSELECT_P1;
 		statement.jmpCondition = Jitter::CONDITION_NEVER;
-		statement.dst.reset();
+		statement.dst = nullptr;
 
 		changed = true;
 	}
@@ -1492,7 +1509,7 @@ bool CJitter::DeadcodeElimination(VERSIONED_STATEMENT_LIST& versionedStatementLi
 		CSymbol* candidate = nullptr;
 		if(symbolRef && symbolRef->GetSymbol()->IsTemporary())
 		{
-			candidate = symbolRef->GetSymbol().get();
+			candidate = symbolRef->GetSymbol();
 		}
 		else if(auto relativeSymbol = dynamic_symbolref_cast(SYM_RELATIVE, symbolRef))
 		{
@@ -1516,7 +1533,7 @@ bool CJitter::DeadcodeElimination(VERSIONED_STATEMENT_LIST& versionedStatementLi
 
 			innerStatement.VisitSources(
 			    [&](const SymbolRefPtr& innerSymbolRef, bool) {
-				    if(innerSymbolRef->Equals(symbolRef.get()))
+				    if(innerSymbolRef->Equals(symbolRef))
 				    {
 					    used = true;
 					    return;
@@ -1563,7 +1580,7 @@ void CJitter::CoalesceTemporaries(BASIC_BLOCK& basicBlock)
 		if(!outerStatement.dst) continue;
 		if(!outerStatement.dst->GetSymbol()->IsTemporary()) continue;
 
-		auto tempSymbol = outerStatement.dst->GetSymbol().get();
+		auto tempSymbol = outerStatement.dst->GetSymbol();
 		CSymbol* candidate = nullptr;
 
 		//Check for a possible replacement
@@ -1661,7 +1678,7 @@ void CJitter::RemoveSelfAssignments(BASIC_BLOCK& basicBlock)
 	{
 		STATEMENT& outerStatement(*outerStatementIterator);
 
-		if(outerStatement.op == OP_MOV && outerStatement.dst->Equals(outerStatement.src1.get()))
+		if(outerStatement.op == OP_MOV && outerStatement.dst->Equals(outerStatement.src1))
 		{
 			outerStatementIterator = basicBlock.statements.erase(outerStatementIterator);
 		}
@@ -1682,7 +1699,7 @@ void CJitter::PruneSymbols(BASIC_BLOCK& basicBlock) const
 		statement.VisitOperands(
 		    [&](const SymbolRefPtr& symbolRef, bool) {
 			    const auto& symbol = symbolRef->GetSymbol();
-			    symbolUseCount[symbol.get()]++;
+			    symbolUseCount[symbol]++;
 		    });
 	}
 
@@ -1690,7 +1707,7 @@ void CJitter::PruneSymbols(BASIC_BLOCK& basicBlock) const
 	    symbolIterator != std::end(symbolTable.GetSymbols());)
 	{
 		const auto& symbol(*symbolIterator);
-		if(symbolUseCount.find(symbol.get()) == std::end(symbolUseCount))
+		if(symbolUseCount.find(symbol) == std::end(symbolUseCount))
 		{
 			symbolIterator = symbolTable.RemoveSymbol(symbolIterator);
 		}
@@ -1840,7 +1857,7 @@ void CJitter::NormalizeStatements(BASIC_BLOCK& basicBlock)
 				swapped = true;
 			}
 			else if(dstreg && src1reg && src2reg &&
-			        statement.dst->GetSymbol()->Equals(statement.src2->GetSymbol().get()))
+			        statement.dst->GetSymbol()->Equals(statement.src2->GetSymbol()))
 			{
 				//If all operands are registers and dst is equal to src2, swap to make dst and src2 side by side
 				std::swap(statement.src1, statement.src2);

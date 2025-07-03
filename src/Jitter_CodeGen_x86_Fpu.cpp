@@ -79,8 +79,8 @@ CX86Assembler::SSE_CMP_TYPE CCodeGen_x86::GetSseConditionCode(Jitter::CONDITION 
 
 void CCodeGen_x86::Emit_Fp_AbsS_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_assembler.MovEd(CX86Assembler::rAX, MakeMemoryFp32SymbolAddress(src1));
 	m_assembler.AndId(CX86Assembler::MakeRegisterAddress(CX86Assembler::rAX), 0x7FFFFFFF);
@@ -89,8 +89,8 @@ void CCodeGen_x86::Emit_Fp_AbsS_MemMem(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp_NegS_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_assembler.MovEd(CX86Assembler::rAX, MakeMemoryFp32SymbolAddress(src1));
 	m_assembler.XorId(CX86Assembler::MakeRegisterAddress(CX86Assembler::rAX), 0x80000000);
@@ -99,8 +99,8 @@ void CCodeGen_x86::Emit_Fp_NegS_MemMem(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Fp32_LdCst_MemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT);
 

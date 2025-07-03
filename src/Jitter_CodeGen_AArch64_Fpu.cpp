@@ -96,8 +96,8 @@ void CCodeGen_AArch64::CommitSymbolRegisterFp(CSymbol* symbol, CAArch64Assembler
 template <typename FPUOP>
 void CCodeGen_AArch64::Emit_Fpu_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -110,9 +110,9 @@ void CCodeGen_AArch64::Emit_Fpu_VarVar(const STATEMENT& statement)
 template <typename FPUOP>
 void CCodeGen_AArch64::Emit_Fpu_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -125,8 +125,8 @@ void CCodeGen_AArch64::Emit_Fpu_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp32_Mov_RegMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_REGISTER32);
 
@@ -135,8 +135,8 @@ void CCodeGen_AArch64::Emit_Fp32_Mov_RegMem(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp32_Mov_MemReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_FP_REGISTER32);
 
@@ -145,8 +145,8 @@ void CCodeGen_AArch64::Emit_Fp32_Mov_MemReg(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp32_LdCst_RegCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_REGISTER32);
 	assert(src1->m_type == SYM_CONSTANT);
@@ -162,8 +162,8 @@ void CCodeGen_AArch64::Emit_Fp32_LdCst_RegCst(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp32_LdCst_TmpCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(dst->m_type == SYM_FP_TEMPORARY32);
 	assert(src1->m_type == SYM_CONSTANT);
@@ -176,9 +176,9 @@ void CCodeGen_AArch64::Emit_Fp32_LdCst_TmpCst(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_Cmp_AnyVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDef(dst, GetNextTempRegister());
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -192,8 +192,8 @@ void CCodeGen_AArch64::Emit_Fp_Cmp_AnyVarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_Rcpl_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -207,8 +207,8 @@ void CCodeGen_AArch64::Emit_Fp_Rcpl_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_Rsqrt_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -224,8 +224,8 @@ void CCodeGen_AArch64::Emit_Fp_Rsqrt_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_Clamp_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -240,8 +240,8 @@ void CCodeGen_AArch64::Emit_Fp_Clamp_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_ToSingleI32_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -253,8 +253,8 @@ void CCodeGen_AArch64::Emit_Fp_ToSingleI32_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_ToInt32TruncS_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstReg = PrepareSymbolRegisterDefFp(dst);
 	auto src1Reg = PrepareSymbolRegisterUseFp(src1);
@@ -266,7 +266,7 @@ void CCodeGen_AArch64::Emit_Fp_ToInt32TruncS_VarVar(const STATEMENT& statement)
 
 void CCodeGen_AArch64::Emit_Fp_SetRoundingMode_Cst(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto tmpReg = GetNextTempRegister();
 

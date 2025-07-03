@@ -18,7 +18,7 @@ bool CCodeGen::SymbolMatches(MATCHTYPE match, const SymbolRefPtr& symbolRef)
 			return false;
 	}
 	if(!symbolRef) return false;
-	CSymbol* symbol = symbolRef->GetSymbol().get();
+	CSymbol* symbol = symbolRef->GetSymbol();
 	switch(match)
 	{
 	case MATCH_RELATIVE:

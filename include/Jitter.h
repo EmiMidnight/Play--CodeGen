@@ -46,6 +46,9 @@ namespace Jitter
 		CJitter(CCodeGen*);
 		virtual ~CJitter();
 
+		// Clear all allocated SymbolRef objects
+		void ClearSymbolRefs();
+
 		virtual void Begin();
 		virtual void End();
 
@@ -349,8 +352,9 @@ namespace Jitter
 		SymbolPtr MakeConstantPtr(uintptr_t);
 		SymbolPtr MakeConstant64(uint64);
 
-		SymbolRefPtr MakeSymbolRef(const SymbolPtr&);
-		int GetSymbolSize(const SymbolRefPtr&);
+		SymbolRefPtr MakeSymbolRef(SymbolPtr);
+		SymbolRefPtr MakeSymbolRef(SymbolPtr, int version);
+		int GetSymbolSize(SymbolRefPtr);
 
 		VERSIONED_STATEMENT_LIST GenerateVersionedStatementList(const StatementList&);
 		StatementList CollapseVersionedStatementList(const VERSIONED_STATEMENT_LIST&);
@@ -383,6 +387,8 @@ namespace Jitter
 		LabelMapType m_labels;
 
 		bool m_codeGenSupportsCmpSelect = false;
+
+		std::vector<CSymbolRef*> m_symbolRefs;
 	};
 
 }

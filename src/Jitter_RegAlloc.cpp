@@ -85,9 +85,9 @@ void CJitter::AllocateRegisters(BASIC_BLOCK& basicBlock)
 			{
 				STATEMENT statement;
 				statement.op = OP_MOV;
-				statement.dst = std::make_shared<CSymbolRef>(
+				statement.dst = MakeSymbolRef(
 				    symbolTable.MakeSymbol(symbolRegAlloc.registerType, symbolRegAlloc.registerId));
-				statement.src1 = std::make_shared<CSymbolRef>(symbol);
+				statement.src1 = MakeSymbolRef(symbol);
 
 				loadStatements.insert(std::make_pair(allocRange.first, statement));
 			}
@@ -99,8 +99,8 @@ void CJitter::AllocateRegisters(BASIC_BLOCK& basicBlock)
 			{
 				STATEMENT statement;
 				statement.op = OP_MOV;
-				statement.dst = std::make_shared<CSymbolRef>(symbol);
-				statement.src1 = std::make_shared<CSymbolRef>(
+				statement.dst = MakeSymbolRef(symbol);
+				statement.src1 = MakeSymbolRef(
 				    symbolTable.MakeSymbol(symbolRegAlloc.registerType, symbolRegAlloc.registerId));
 
 				spillStatements.insert(std::make_pair(allocRange.second, statement));
@@ -368,8 +368,8 @@ void CJitter::MarkAliasedSymbols(const BASIC_BLOCK& basicBlock, const Allocation
 			statement.VisitOperands(
 			    [&](const SymbolRefPtr& symbolRef, bool) {
 				    auto symbol = symbolRef->GetSymbol();
-				    if(symbol->Equals(testedSymbol.get())) return;
-				    if(symbol->Aliases(testedSymbol.get()))
+				    if(symbol->Equals(testedSymbol)) return;
+				    if(symbol->Aliases(testedSymbol))
 				    {
 					    symbolRegAlloc.second.aliased = true;
 				    }

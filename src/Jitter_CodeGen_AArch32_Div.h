@@ -23,9 +23,9 @@ extern "C" int32 CodeGen_AArch32_mod_signed(int32 a, int32 b)
 template <bool isSigned>
 void CCodeGen_AArch32::Div_GenericTmp64AnyAnySoft(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto divFct = isSigned ? reinterpret_cast<uintptr_t>(&CodeGen_AArch32_div_signed) : reinterpret_cast<uintptr_t>(&CodeGen_AArch32_div_unsigned);
 	auto modFct = isSigned ? reinterpret_cast<uintptr_t>(&CodeGen_AArch32_mod_signed) : reinterpret_cast<uintptr_t>(&CodeGen_AArch32_mod_unsigned);
@@ -78,9 +78,9 @@ void CCodeGen_AArch32::Div_GenericTmp64AnyAnySoft(const STATEMENT& statement)
 template <bool isSigned>
 void CCodeGen_AArch32::Div_GenericTmp64AnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_TEMPORARY64);
 

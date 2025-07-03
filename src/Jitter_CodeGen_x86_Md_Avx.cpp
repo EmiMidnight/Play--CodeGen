@@ -67,8 +67,8 @@ bool CCodeGen_x86::TryExpandConstantInRegisterMdAvx(uint32 constant, CX86Assembl
 template <typename MDOP>
 void CCodeGen_x86::Emit_Md_Avx_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 
@@ -80,9 +80,9 @@ void CCodeGen_x86::Emit_Md_Avx_VarVar(const STATEMENT& statement)
 template <typename MDOP>
 void CCodeGen_x86::Emit_Md_Avx_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto src1Register = PrepareSymbolRegisterUseMdAvx(src1, CX86Assembler::xMM1);
@@ -95,9 +95,9 @@ void CCodeGen_x86::Emit_Md_Avx_VarVarVar(const STATEMENT& statement)
 template <typename MDOP>
 void CCodeGen_x86::Emit_Md_Avx_VarVarVarRev(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto src2Register = PrepareSymbolRegisterUseMdAvx(src2, CX86Assembler::xMM1);
@@ -110,9 +110,9 @@ void CCodeGen_x86::Emit_Md_Avx_VarVarVarRev(const STATEMENT& statement)
 template <typename MDOPSHIFT, uint8 SAMASK>
 void CCodeGen_x86::Emit_Md_Avx_Shift_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto src1Register = PrepareSymbolRegisterUseMdAvx(src1, CX86Assembler::xMM1);
@@ -124,24 +124,24 @@ void CCodeGen_x86::Emit_Md_Avx_Shift_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Mov_RegVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_assembler.VmovapsVo(m_mdRegisters[dst->m_valueLow], MakeVariable128SymbolAddress(src1));
 }
 
 void CCodeGen_x86::Emit_Md_Avx_Mov_MemReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	m_assembler.VmovapsVo(MakeMemory128SymbolAddress(dst), m_mdRegisters[src1->m_valueLow]);
 }
 
 void CCodeGen_x86::Emit_Md_Avx_Mov_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto tmpRegister = CX86Assembler::xMM0;
 
@@ -151,9 +151,9 @@ void CCodeGen_x86::Emit_Md_Avx_Mov_MemMem(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_MovMasked_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 mask = static_cast<uint8>(statement.jmpCondition);
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
@@ -166,9 +166,9 @@ void CCodeGen_x86::Emit_Md_Avx_MovMasked_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_AddSSW_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto uxRegister = CX86Assembler::xMM0;
 	auto uyRegister = CX86Assembler::xMM1;
@@ -247,9 +247,9 @@ void CCodeGen_x86::Emit_Md_Avx_AddSSW_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_SubSSW_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto uxRegister = CX86Assembler::xMM0;
 	auto uyRegister = CX86Assembler::xMM1;
@@ -322,9 +322,9 @@ void CCodeGen_x86::Emit_Md_Avx_SubSSW_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_AddUSW_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto xRegister = CX86Assembler::xMM0;
 	auto resRegister = CX86Assembler::xMM1;
@@ -365,9 +365,9 @@ void CCodeGen_x86::Emit_Md_Avx_AddUSW_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_SubUSW_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto xRegister = CX86Assembler::xMM0;
 	auto resRegister = CX86Assembler::xMM1;
@@ -410,8 +410,8 @@ void CCodeGen_x86::Emit_Md_Avx_SubUSW_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_ClampS_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto src1Register = PrepareSymbolRegisterUseMdAvx(src1, CX86Assembler::xMM1);
@@ -424,9 +424,9 @@ void CCodeGen_x86::Emit_Md_Avx_ClampS_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_PackHB_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto tempRegister = CX86Assembler::xMM1;
@@ -449,9 +449,9 @@ void CCodeGen_x86::Emit_Md_Avx_PackHB_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_PackWH_VarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto resultRegister = CX86Assembler::xMM1;
@@ -475,8 +475,8 @@ void CCodeGen_x86::Emit_Md_Avx_PackWH_VarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Not_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto cstRegister = CX86Assembler::xMM1;
@@ -491,8 +491,8 @@ void CCodeGen_x86::Emit_Md_Avx_Not_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Abs_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto maskRegister = CX86Assembler::xMM1;
@@ -508,8 +508,8 @@ void CCodeGen_x86::Emit_Md_Avx_Abs_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Neg_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto bitRegister = CX86Assembler::xMM1;
@@ -525,10 +525,10 @@ void CCodeGen_x86::Emit_Md_Avx_Neg_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_MakeClip_VarVarVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDef(dst, CX86Assembler::rDX);
 	auto valueReg = PrepareSymbolRegisterUseMdAvx(src1, CX86Assembler::xMM0);
@@ -553,8 +553,8 @@ void CCodeGen_x86::Emit_Md_Avx_MakeClip_VarVarVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_MakeSz_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDef(dst, CX86Assembler::rDX);
 	auto src1Register = PrepareSymbolRegisterUseMdAvx(src1, CX86Assembler::xMM0);
@@ -580,8 +580,8 @@ void CCodeGen_x86::Emit_Md_Avx_MakeSz_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Expand_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 
@@ -593,8 +593,8 @@ void CCodeGen_x86::Emit_Md_Avx_Expand_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Expand_VarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 
@@ -611,9 +611,9 @@ void CCodeGen_x86::Emit_Md_Avx_Expand_VarCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Expand_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto srcRegister = PrepareSymbolRegisterUseMdAvx(src1, CX86Assembler::xMM1);
@@ -626,8 +626,8 @@ void CCodeGen_x86::Emit_Md_Avx_Expand_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx2_Expand_VarReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 
@@ -639,8 +639,8 @@ void CCodeGen_x86::Emit_Md_Avx2_Expand_VarReg(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx2_Expand_VarMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 
@@ -651,8 +651,8 @@ void CCodeGen_x86::Emit_Md_Avx2_Expand_VarMem(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx2_Expand_VarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 
@@ -669,9 +669,9 @@ void CCodeGen_x86::Emit_Md_Avx2_Expand_VarCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx2_Expand_VarRegCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	auto srcRegister = m_mdRegisters[src1->m_valueLow];
@@ -691,9 +691,9 @@ void CCodeGen_x86::Emit_Md_Avx2_Expand_VarRegCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx2_Expand_VarMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstRegister = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
 	m_assembler.VpbroadcastdVo(dstRegister, MakeMemory128SymbolElementAddress(src1, src2->m_valueLow));
@@ -702,9 +702,9 @@ void CCodeGen_x86::Emit_Md_Avx2_Expand_VarMemCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Avx_MergeTo256_MemVarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_TEMPORARY256);
 
@@ -723,9 +723,9 @@ void CCodeGen_x86::Emit_Avx_MergeTo256_MemVarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Srl256_VarMemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto offsetRegister = CX86Assembler::rAX;
 	auto resultRegister = CX86Assembler::xMM0;
@@ -743,9 +743,9 @@ void CCodeGen_x86::Emit_Md_Avx_Srl256_VarMemVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_Srl256_VarMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto resultRegister = CX86Assembler::xMM0;
 
@@ -760,8 +760,8 @@ void CCodeGen_x86::Emit_Md_Avx_Srl256_VarMemCst(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_LoadFromRef_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto dstReg = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
@@ -773,9 +773,9 @@ void CCodeGen_x86::Emit_Md_Avx_LoadFromRef_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_LoadFromRef_VarVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -787,8 +787,8 @@ void CCodeGen_x86::Emit_Md_Avx_LoadFromRef_VarVarAny(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_StoreAtRef_VarVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto addressReg = PrepareRefSymbolRegisterUse(src1, CX86Assembler::rAX);
 	auto valueReg = PrepareSymbolRegisterUseMdAvx(src2, CX86Assembler::xMM0);
@@ -798,10 +798,10 @@ void CCodeGen_x86::Emit_Md_Avx_StoreAtRef_VarVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_StoreAtRef_VarAnyVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src3 = statement.src3->GetSymbol();
 
 	assert(scale == 1);
 
@@ -811,10 +811,10 @@ void CCodeGen_x86::Emit_Md_Avx_StoreAtRef_VarAnyVar(const STATEMENT& statement)
 
 void CCodeGen_x86::Emit_Md_Avx_LoadFromRefMasked_VarVarAnyVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 mask = static_cast<uint8>(statement.jmpCondition);
 
 	auto dstReg = PrepareSymbolRegisterDefMd(dst, CX86Assembler::xMM0);
@@ -826,9 +826,9 @@ void CCodeGen_x86::Emit_Md_Avx_LoadFromRefMasked_VarVarAnyVar(const STATEMENT& s
 
 void CCodeGen_x86::Emit_Md_Avx_StoreAtRefMasked_VarAnyVar(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 mask = static_cast<uint8>(statement.jmpCondition);
 
 	auto valueReg = PrepareSymbolRegisterUseMdAvx(src3, CX86Assembler::xMM0);

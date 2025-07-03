@@ -99,8 +99,8 @@ void CCodeGen_AArch32::MdBlendRegisters(
 template <typename MDOP>
 void CCodeGen_AArch32::Emit_Md_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -118,9 +118,9 @@ void CCodeGen_AArch32::Emit_Md_MemMem(const STATEMENT& statement)
 template <typename MDOP>
 void CCodeGen_AArch32::Emit_Md_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -142,9 +142,9 @@ void CCodeGen_AArch32::Emit_Md_MemMemMem(const STATEMENT& statement)
 template <typename MDOP>
 void CCodeGen_AArch32::Emit_Md_MemMemMemRev(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -166,9 +166,9 @@ void CCodeGen_AArch32::Emit_Md_MemMemMemRev(const STATEMENT& statement)
 template <typename MDSHIFTOP>
 void CCodeGen_AArch32::Emit_Md_Shift_MemMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -185,8 +185,8 @@ void CCodeGen_AArch32::Emit_Md_Shift_MemMemCst(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Mov_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -199,9 +199,9 @@ void CCodeGen_AArch32::Emit_Md_Mov_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_DivS_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -231,9 +231,9 @@ void CCodeGen_AArch32::Emit_Md_DivS_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Srl256_MemMemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_TEMPORARY256);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -253,9 +253,9 @@ void CCodeGen_AArch32::Emit_Md_Srl256_MemMemCst(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Srl256_MemMemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_TEMPORARY256);
 
@@ -282,8 +282,8 @@ void CCodeGen_AArch32::Emit_Md_Srl256_MemMemVar(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_LoadFromRef_MemVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto src1AddrReg = PrepareSymbolRegisterUseRef(src1, CAArch32Assembler::r0);
 	auto dstAddrReg = CAArch32Assembler::r1;
@@ -298,9 +298,9 @@ void CCodeGen_AArch32::Emit_Md_LoadFromRef_MemVar(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_LoadFromRef_MemVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -318,8 +318,8 @@ void CCodeGen_AArch32::Emit_Md_LoadFromRef_MemVarAny(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_StoreAtRef_VarMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto src1AddrReg = PrepareSymbolRegisterUseRef(src1, CAArch32Assembler::r0);
 	auto src2AddrReg = CAArch32Assembler::r1;
@@ -334,9 +334,9 @@ void CCodeGen_AArch32::Emit_Md_StoreAtRef_VarMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_StoreAtRef_VarAnyMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert(scale == 1);
@@ -354,10 +354,10 @@ void CCodeGen_AArch32::Emit_Md_StoreAtRef_VarAnyMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_LoadFromRefMasked_MemMemAnyMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	auto mask = static_cast<uint8>(statement.jmpCondition);
 	uint8 scale = 1;
 
@@ -379,9 +379,9 @@ void CCodeGen_AArch32::Emit_Md_LoadFromRefMasked_MemMemAnyMem(const STATEMENT& s
 
 void CCodeGen_AArch32::Emit_Md_StoreAtRefMasked_MemAnyMem(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 mask = static_cast<uint8>(statement.jmpCondition);
 	uint8 scale = 1;
 
@@ -401,9 +401,9 @@ void CCodeGen_AArch32::Emit_Md_StoreAtRefMasked_MemAnyMem(const STATEMENT& state
 
 void CCodeGen_AArch32::Emit_Md_MovMasked_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	FRAMEWORK_MAYBE_UNUSED auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	FRAMEWORK_MAYBE_UNUSED auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->Equals(src1));
 
@@ -426,8 +426,8 @@ void CCodeGen_AArch32::Emit_Md_MovMasked_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Expand_MemReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto tmpReg = CAArch32Assembler::q0;
@@ -440,8 +440,8 @@ void CCodeGen_AArch32::Emit_Md_Expand_MemReg(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Expand_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1Reg = CAArch32Assembler::r1;
@@ -456,8 +456,8 @@ void CCodeGen_AArch32::Emit_Md_Expand_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Expand_MemCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1Reg = CAArch32Assembler::r1;
@@ -480,9 +480,9 @@ void CCodeGen_AArch32::Emit_Md_Expand_MemCst(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_Expand_VarVarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 	assert(src2->m_valueLow < 4);
@@ -502,8 +502,8 @@ void CCodeGen_AArch32::Emit_Md_Expand_VarVarCst(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_ClampS_MemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -528,10 +528,10 @@ void CCodeGen_AArch32::Emit_Md_ClampS_MemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_MakeClip_VarMemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 
 	auto valueAddrReg = CAArch32Assembler::r0;
 	auto cstAddrReg = CAArch32Assembler::r1;
@@ -581,8 +581,8 @@ void CCodeGen_AArch32::Emit_Md_MakeClip_VarMemMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_MakeSz_VarMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	auto src1AddrReg = CAArch32Assembler::r0;
 	auto cstAddrReg = CAArch32Assembler::r1;
@@ -621,9 +621,9 @@ void CCodeGen_AArch32::Emit_Md_MakeSz_VarMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_PackHB_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -645,9 +645,9 @@ void CCodeGen_AArch32::Emit_Md_PackHB_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_Md_PackWH_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -670,9 +670,9 @@ void CCodeGen_AArch32::Emit_Md_PackWH_MemMemMem(const STATEMENT& statement)
 template <uint32 offset>
 void CCodeGen_AArch32::Emit_Md_UnpackBH_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -694,9 +694,9 @@ void CCodeGen_AArch32::Emit_Md_UnpackBH_MemMemMem(const STATEMENT& statement)
 template <uint32 offset>
 void CCodeGen_AArch32::Emit_Md_UnpackHW_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -718,9 +718,9 @@ void CCodeGen_AArch32::Emit_Md_UnpackHW_MemMemMem(const STATEMENT& statement)
 template <uint32 offset>
 void CCodeGen_AArch32::Emit_Md_UnpackWD_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	auto dstAddrReg = CAArch32Assembler::r0;
 	auto src1AddrReg = CAArch32Assembler::r1;
@@ -741,9 +741,9 @@ void CCodeGen_AArch32::Emit_Md_UnpackWD_MemMemMem(const STATEMENT& statement)
 
 void CCodeGen_AArch32::Emit_MergeTo256_MemMemMem(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_TEMPORARY256);
 

@@ -4,9 +4,9 @@
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegRegReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	if(dst->Equals(src1))
 	{
@@ -38,9 +38,9 @@ void CCodeGen_x86::Emit_Alu_RegRegReg(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegRegMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src1->m_type == SYM_REGISTER);
@@ -56,9 +56,9 @@ void CCodeGen_x86::Emit_Alu_RegRegMem(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegRegCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	//We can optimize here if it's equal to zero
 	assert(src2->m_valueLow != 0);
@@ -81,9 +81,9 @@ void CCodeGen_x86::Emit_Alu_RegRegCst(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegMemReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_REGISTER);
@@ -103,9 +103,9 @@ void CCodeGen_x86::Emit_Alu_RegMemReg(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegMemMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 
@@ -116,9 +116,9 @@ void CCodeGen_x86::Emit_Alu_RegMemMem(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegMemCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -130,9 +130,9 @@ void CCodeGen_x86::Emit_Alu_RegMemCst(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegCstReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(statement.op == OP_SUB);
 
@@ -152,9 +152,9 @@ void CCodeGen_x86::Emit_Alu_RegCstReg(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_RegCstMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(statement.op == OP_SUB);
 	assert(dst->m_type == SYM_REGISTER);
@@ -175,9 +175,9 @@ void CCodeGen_x86::Emit_Alu_RegCstMem(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemRegReg(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_REGISTER);
@@ -201,9 +201,9 @@ void CCodeGen_x86::Emit_Alu_MemRegReg(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemRegMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_REGISTER);
 
@@ -215,9 +215,9 @@ void CCodeGen_x86::Emit_Alu_MemRegMem(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemRegCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_REGISTER);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -240,9 +240,9 @@ void CCodeGen_x86::Emit_Alu_MemRegCst(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemMemReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_REGISTER);
 
@@ -254,9 +254,9 @@ void CCodeGen_x86::Emit_Alu_MemMemReg(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemMemCst(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src2->m_type == SYM_CONSTANT);
 
@@ -268,9 +268,9 @@ void CCodeGen_x86::Emit_Alu_MemMemCst(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemMemMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	m_assembler.MovEd(CX86Assembler::rAX, MakeMemorySymbolAddress(src1));
 	((m_assembler).*(ALUOP::OpEd()))(CX86Assembler::rAX, MakeMemorySymbolAddress(src2));
@@ -280,9 +280,9 @@ void CCodeGen_x86::Emit_Alu_MemMemMem(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemCstReg(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANT);
 	assert(src2->m_type == SYM_REGISTER);
@@ -295,9 +295,9 @@ void CCodeGen_x86::Emit_Alu_MemCstReg(const STATEMENT& statement)
 template <typename ALUOP>
 void CCodeGen_x86::Emit_Alu_MemCstMem(const STATEMENT& statement)
 {
-	CSymbol* dst = statement.dst->GetSymbol().get();
-	CSymbol* src1 = statement.src1->GetSymbol().get();
-	CSymbol* src2 = statement.src2->GetSymbol().get();
+	CSymbol* dst = statement.dst->GetSymbol();
+	CSymbol* src1 = statement.src1->GetSymbol();
+	CSymbol* src2 = statement.src2->GetSymbol();
 
 	assert(statement.op == OP_SUB);
 	assert(src1->m_type == SYM_CONSTANT);

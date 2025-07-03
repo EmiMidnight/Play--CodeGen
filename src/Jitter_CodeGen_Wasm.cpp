@@ -13,9 +13,9 @@ using namespace Jitter;
 template <uint32 op>
 void CCodeGen_Wasm::Emit_Generic_Binary_MemAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -29,9 +29,9 @@ void CCodeGen_Wasm::Emit_Generic_Binary_MemAnyAny(const STATEMENT& statement)
 template <bool isSigned>
 void CCodeGen_Wasm::Emit_Mul_Tmp64AnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_TEMPORARY64);
 
@@ -52,9 +52,9 @@ void CCodeGen_Wasm::Emit_Mul_Tmp64AnyAny(const STATEMENT& statement)
 template <bool isSigned>
 void CCodeGen_Wasm::Emit_Div_Tmp64AnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(dst->m_type == SYM_TEMPORARY64);
 
@@ -531,7 +531,7 @@ void CCodeGen_Wasm::PrepareSignatures(CWasmModuleBuilder& moduleBuilder, const S
 	{
 		if(statement.op != OP_CALL) continue;
 
-		auto src1 = statement.src1->GetSymbol().get();
+		auto src1 = statement.src1->GetSymbol();
 		assert(src1->m_type == SYM_CONSTANTPTR);
 
 		auto fctInfo = CWasmFunctionRegistry::FindFunction(src1->m_valueLow);
@@ -929,8 +929,8 @@ void CCodeGen_Wasm::Emit_Break(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Mov_VarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -940,8 +940,8 @@ void CCodeGen_Wasm::Emit_Mov_VarAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_RelToRef_VarCst(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -954,9 +954,9 @@ void CCodeGen_Wasm::Emit_RelToRef_VarCst(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_AddRef_AnyAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -969,8 +969,8 @@ void CCodeGen_Wasm::Emit_AddRef_AnyAnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_IsRefNull_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -982,8 +982,8 @@ void CCodeGen_Wasm::Emit_IsRefNull_VarVar(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_LoadFromRef_VarVar(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -997,9 +997,9 @@ void CCodeGen_Wasm::Emit_LoadFromRef_VarVar(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_LoadFromRef_VarVarAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert((scale == 1) || (scale == 4));
@@ -1034,8 +1034,8 @@ void CCodeGen_Wasm::Emit_LoadFromRef_VarVarAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_StoreAtRef_VarAny(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolUse(src1);
 	PrepareSymbolUse(src2);
@@ -1047,9 +1047,9 @@ void CCodeGen_Wasm::Emit_StoreAtRef_VarAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_StoreAtRef_VarAnyAny(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 	uint8 scale = static_cast<uint8>(statement.jmpCondition);
 
 	assert((scale == 1) || (scale == 4));
@@ -1083,7 +1083,7 @@ void CCodeGen_Wasm::Emit_StoreAtRef_VarAnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Param_Ctx(const STATEMENT& statement)
 {
-	FRAMEWORK_MAYBE_UNUSED auto src1 = statement.src1->GetSymbol().get();
+	FRAMEWORK_MAYBE_UNUSED auto src1 = statement.src1->GetSymbol();
 	assert(src1->m_type == SYM_CONTEXT);
 
 	m_params.push([this]() { PushContext(); });
@@ -1091,14 +1091,14 @@ void CCodeGen_Wasm::Emit_Param_Ctx(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Param_Any(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 	m_params.push([this, src1]() { PrepareSymbolUse(src1); });
 }
 
 void CCodeGen_Wasm::Emit_Call(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANTPTR);
 	assert(src2->m_type == SYM_CONSTANT);
@@ -1126,7 +1126,7 @@ void CCodeGen_Wasm::Emit_Call(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_RetVal_Tmp(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
 	PullTemporary(dst);
 }
 
@@ -1137,7 +1137,7 @@ void CCodeGen_Wasm::Emit_ExternJmp(const STATEMENT& statement)
 	//This could be implemented using tail calls which doesn't seem to be widely supported.
 	//Maybe we could emit a return after the call and be done with it? (stack overflow problems maybe)
 
-	auto src1 = statement.src1->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
 
 	assert(src1->m_type == SYM_CONSTANTPTR);
 
@@ -1179,8 +1179,8 @@ void CCodeGen_Wasm::Emit_Jmp(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_CondJmp_AnyAny(const STATEMENT& statement)
 {
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolUse(src1);
 	PrepareSymbolUse(src2);
@@ -1226,9 +1226,9 @@ void CCodeGen_Wasm::Emit_CondJmp_AnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Cmp_AnyAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -1276,10 +1276,10 @@ void CCodeGen_Wasm::Emit_Cmp_AnyAnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Select_VarVarAnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
-	auto src2 = statement.src2->GetSymbol().get();
-	auto src3 = statement.src3->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
+	auto src2 = statement.src2->GetSymbol();
+	auto src3 = statement.src3->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src2);
@@ -1293,8 +1293,8 @@ void CCodeGen_Wasm::Emit_Select_VarVarAnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Not_AnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 	PrepareSymbolUse(src1);
@@ -1309,8 +1309,8 @@ void CCodeGen_Wasm::Emit_Not_AnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_Lzc_AnyAny(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 
@@ -1357,8 +1357,8 @@ void CCodeGen_Wasm::Emit_Lzc_AnyAny(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_ExtLow64VarMem64(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 
@@ -1374,8 +1374,8 @@ void CCodeGen_Wasm::Emit_ExtLow64VarMem64(const STATEMENT& statement)
 
 void CCodeGen_Wasm::Emit_ExtHigh64VarMem64(const STATEMENT& statement)
 {
-	auto dst = statement.dst->GetSymbol().get();
-	auto src1 = statement.src1->GetSymbol().get();
+	auto dst = statement.dst->GetSymbol();
+	auto src1 = statement.src1->GetSymbol();
 
 	PrepareSymbolDef(dst);
 

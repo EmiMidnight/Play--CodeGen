@@ -199,6 +199,10 @@ namespace Jitter
 	public:
 		STATEMENT()
 		    : op(OP_NOP)
+		    , src1(nullptr)
+		    , src2(nullptr)
+		    , src3(nullptr)
+		    , dst(nullptr)
 		    , jmpBlock(-1)
 		    , jmpCondition(CONDITION_NEVER)
 		{
