@@ -388,7 +388,7 @@ CX86Assembler::LITERAL128ID CX86Assembler::CreateLiteral128(const LITERAL128& li
 	LITERAL128REF literalRef;
 	literalRef.value = literal;
 	assert(m_currentLabel);
-	m_currentLabel->literal128Refs.insert(std::make_pair(literalId, literalRef));
+	m_currentLabel->literal128Refs.insert({literalId, literalRef});
 	return literalId;
 }
 

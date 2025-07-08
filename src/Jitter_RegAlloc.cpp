@@ -9,6 +9,7 @@
 #ifdef DUMP_STATEMENTS
 #include <iostream>
 #endif
+#include <algorithm>
 
 using namespace Jitter;
 
@@ -18,6 +19,7 @@ void CJitter::AllocateRegisters(BASIC_BLOCK& basicBlock)
 
 	std::multimap<unsigned int, STATEMENT> loadStatements;
 	std::multimap<unsigned int, STATEMENT> spillStatements;
+
 #ifdef DUMP_STATEMENTS
 	DumpStatementList(basicBlock.statements);
 	std::cout << std::endl;
@@ -116,21 +118,31 @@ void CJitter::AllocateRegisters(BASIC_BLOCK& basicBlock)
 	std::map<unsigned int, StatementList::const_iterator> loadPoints;
 	std::map<unsigned int, StatementList::const_iterator> spillPoints;
 
-	//Load
+	robin_hood::unordered_set<unsigned int> loadStatementIndices;
+	robin_hood::unordered_set<unsigned int> spillStatementIndices;
+
+	for(const auto& stmt : loadStatements)
+	{
+		loadStatementIndices.insert(stmt.first);
+	}
+	for(const auto& stmt : spillStatements)
+	{
+		spillStatementIndices.insert(stmt.first);
+	}
+
 	for(const auto& statementInfo : ConstIndexedStatementList(basicBlock.statements))
 	{
 		const auto& statementIdx(statementInfo.index);
-		if(loadStatements.find(statementIdx) != std::end(loadStatements))
+		if(loadStatementIndices.count(statementIdx))
 		{
-			loadPoints.insert(std::make_pair(statementIdx, statementInfo.iterator));
+			loadPoints.emplace(statementIdx, statementInfo.iterator);
 		}
 	}
 
-	//Spill
 	for(const auto& statementInfo : ConstIndexedStatementList(basicBlock.statements))
 	{
 		const auto& statementIdx(statementInfo.index);
-		if(spillStatements.find(statementIdx) != std::end(spillStatements))
+		if(spillStatementIndices.count(statementIdx))
 		{
 			const auto& statement = statementInfo.statement;
 			auto statementIterator = statementInfo.iterator;
@@ -143,7 +155,7 @@ void CJitter::AllocateRegisters(BASIC_BLOCK& basicBlock)
 			{
 				statementIterator++;
 			}
-			spillPoints.insert(std::make_pair(statementIdx, statementIterator));
+			spillPoints.emplace(statementIdx, statementIterator);
 		}
 	}
 
@@ -179,26 +191,136 @@ void CJitter::AllocateRegisters(BASIC_BLOCK& basicBlock)
 #endif
 }
 
+// void CJitter::AssociateSymbolsToRegisters(SymbolRegAllocInfo& symbolRegAllocs) const
+// {
+// 	//Some notes:
+// 	//- MD and FP registers are lumped together since MD registers are used for both
+// 	//  MD and FP operations on all of our target platforms.
+
+// 	std::multimap<SYM_TYPE, unsigned int> availableRegisters;
+// 	{
+// 		unsigned int regCount = m_codeGen->GetAvailableRegisterCount();
+// 		for(unsigned int i = 0; i < regCount; i++)
+// 		{
+// 			availableRegisters.insert(std::make_pair(SYM_REGISTER, i));
+// 		}
+// 	}
+
+// 	{
+// 		unsigned int regCount = m_codeGen->GetAvailableMdRegisterCount();
+// 		for(unsigned int i = 0; i < regCount; i++)
+// 		{
+// 			availableRegisters.insert(std::make_pair(SYM_REGISTER128, i));
+// 		}
+// 	}
+
+// 	auto isRegisterAllocatable =
+// 	    [](SYM_TYPE symbolType) {
+// 		    return (symbolType == SYM_RELATIVE) || (symbolType == SYM_TEMPORARY) ||
+// 		           (symbolType == SYM_REL_REFERENCE) || (symbolType == SYM_TMP_REFERENCE) ||
+// 		           (symbolType == SYM_FP_RELATIVE32) || (symbolType == SYM_FP_TEMPORARY32) ||
+// 		           (symbolType == SYM_RELATIVE128) || (symbolType == SYM_TEMPORARY128);
+// 	    };
+
+// 	//Sort symbols by usage count
+// 	std::vector<SymbolRegAllocInfo::value_type*> sortedSymbols;
+// 	sortedSymbols.reserve(symbolRegAllocs.size());
+// 	for(auto& symbolRegAllocPair : symbolRegAllocs)
+// 	{
+// 		const auto& symbol(symbolRegAllocPair.first);
+// 		const auto& symbolRegAlloc(symbolRegAllocPair.second);
+// 		if(!isRegisterAllocatable(symbol->m_type)) continue;
+// 		if(symbolRegAlloc.aliased) continue;
+// 		sortedSymbols.push_back(&symbolRegAllocPair);
+// 	}
+
+// 	std::sort(sortedSymbols.begin(), sortedSymbols.end(),
+// 	          [](SymbolRegAllocInfo::value_type* symbolRegAllocPair1, SymbolRegAllocInfo::value_type* symbolRegAllocPair2) {
+// 		          const auto& symbol1(symbolRegAllocPair1->first);
+// 		          const auto& symbol2(symbolRegAllocPair2->first);
+// 		          const auto& symbolRegAlloc1(symbolRegAllocPair1->second);
+// 		          const auto& symbolRegAlloc2(symbolRegAllocPair2->second);
+// 		          if(symbolRegAlloc1.useCount == symbolRegAlloc2.useCount)
+// 		          {
+// 			          if(symbol1->m_type == symbol2->m_type)
+// 			          {
+// 				          return symbol1->m_valueLow > symbol2->m_valueLow;
+// 			          }
+// 			          else
+// 			          {
+// 				          return symbol1->m_type > symbol2->m_type;
+// 			          }
+// 		          }
+// 		          else
+// 		          {
+// 			          return symbolRegAlloc1.useCount > symbolRegAlloc2.useCount;
+// 		          }
+// 	          });
+
+// 	for(auto& symbolRegAllocPair : sortedSymbols)
+// 	{
+// 		if(availableRegisters.empty()) break;
+
+// 		const auto& symbol = symbolRegAllocPair->first;
+// 		auto& symbolRegAlloc = symbolRegAllocPair->second;
+
+// 		//Find suitable register for this symbol
+// 		auto registerIterator = std::end(availableRegisters);
+// 		auto registerIteratorEnd = std::end(availableRegisters);
+// 		auto registerSymbolType = SYM_REGISTER;
+// 		if((symbol->m_type == SYM_RELATIVE) || (symbol->m_type == SYM_TEMPORARY))
+// 		{
+// 			registerIterator = availableRegisters.lower_bound(SYM_REGISTER);
+// 			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER);
+// 			registerSymbolType = SYM_REGISTER;
+// 		}
+// 		else if((symbol->m_type == SYM_REL_REFERENCE) || (symbol->m_type == SYM_TMP_REFERENCE))
+// 		{
+// 			registerIterator = availableRegisters.lower_bound(SYM_REGISTER);
+// 			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER);
+// 			registerSymbolType = SYM_REG_REFERENCE;
+// 		}
+// 		else if((symbol->m_type == SYM_FP_RELATIVE32) || (symbol->m_type == SYM_FP_TEMPORARY32))
+// 		{
+// 			registerIterator = availableRegisters.lower_bound(SYM_REGISTER128);
+// 			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER128);
+// 			registerSymbolType = SYM_FP_REGISTER32;
+// 		}
+// 		else if((symbol->m_type == SYM_RELATIVE128) || (symbol->m_type == SYM_TEMPORARY128))
+// 		{
+// 			registerIterator = availableRegisters.lower_bound(SYM_REGISTER128);
+// 			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER128);
+// 			registerSymbolType = SYM_REGISTER128;
+// 		}
+// 		if(registerIterator != registerIteratorEnd)
+// 		{
+// 			symbolRegAlloc.registerType = registerSymbolType;
+// 			symbolRegAlloc.registerId = registerIterator->second;
+// 			availableRegisters.erase(registerIterator);
+// 		}
+// 	}
+// }
+
 void CJitter::AssociateSymbolsToRegisters(SymbolRegAllocInfo& symbolRegAllocs) const
 {
-	//Some notes:
-	//- MD and FP registers are lumped together since MD registers are used for both
-	//  MD and FP operations on all of our target platforms.
+	std::vector<unsigned int> availableGpRegisters;
+	std::vector<unsigned int> availableMdRegisters;
 
-	std::multimap<SYM_TYPE, unsigned int> availableRegisters;
 	{
 		unsigned int regCount = m_codeGen->GetAvailableRegisterCount();
+		availableGpRegisters.reserve(regCount);
 		for(unsigned int i = 0; i < regCount; i++)
 		{
-			availableRegisters.insert(std::make_pair(SYM_REGISTER, i));
+			availableGpRegisters.push_back(i);
 		}
 	}
 
 	{
 		unsigned int regCount = m_codeGen->GetAvailableMdRegisterCount();
+		availableMdRegisters.reserve(regCount);
 		for(unsigned int i = 0; i < regCount; i++)
 		{
-			availableRegisters.insert(std::make_pair(SYM_REGISTER128, i));
+			availableMdRegisters.push_back(i);
 		}
 	}
 
@@ -210,8 +332,8 @@ void CJitter::AssociateSymbolsToRegisters(SymbolRegAllocInfo& symbolRegAllocs) c
 		           (symbolType == SYM_RELATIVE128) || (symbolType == SYM_TEMPORARY128);
 	    };
 
-	//Sort symbols by usage count
-	std::list<SymbolRegAllocInfo::value_type*> sortedSymbols;
+	std::vector<SymbolRegAllocInfo::value_type*> sortedSymbols;
+	sortedSymbols.reserve(symbolRegAllocs.size());
 	for(auto& symbolRegAllocPair : symbolRegAllocs)
 	{
 		const auto& symbol(symbolRegAllocPair.first);
@@ -220,69 +342,64 @@ void CJitter::AssociateSymbolsToRegisters(SymbolRegAllocInfo& symbolRegAllocs) c
 		if(symbolRegAlloc.aliased) continue;
 		sortedSymbols.push_back(&symbolRegAllocPair);
 	}
-	sortedSymbols.sort(
-	    [](SymbolRegAllocInfo::value_type* symbolRegAllocPair1, SymbolRegAllocInfo::value_type* symbolRegAllocPair2) {
-		    const auto& symbol1(symbolRegAllocPair1->first);
-		    const auto& symbol2(symbolRegAllocPair2->first);
-		    const auto& symbolRegAlloc1(symbolRegAllocPair1->second);
-		    const auto& symbolRegAlloc2(symbolRegAllocPair2->second);
-		    if(symbolRegAlloc1.useCount == symbolRegAlloc2.useCount)
-		    {
-			    if(symbol1->m_type == symbol2->m_type)
-			    {
-				    return symbol1->m_valueLow > symbol2->m_valueLow;
-			    }
-			    else
-			    {
-				    return symbol1->m_type > symbol2->m_type;
-			    }
-		    }
-		    else
-		    {
-			    return symbolRegAlloc1.useCount > symbolRegAlloc2.useCount;
-		    }
-	    });
+
+	std::sort(sortedSymbols.begin(), sortedSymbols.end(),
+	          [](SymbolRegAllocInfo::value_type* symbolRegAllocPair1, SymbolRegAllocInfo::value_type* symbolRegAllocPair2) {
+		          const auto& symbol1(symbolRegAllocPair1->first);
+		          const auto& symbol2(symbolRegAllocPair2->first);
+		          const auto& symbolRegAlloc1(symbolRegAllocPair1->second);
+		          const auto& symbolRegAlloc2(symbolRegAllocPair2->second);
+		          if(symbolRegAlloc1.useCount == symbolRegAlloc2.useCount)
+		          {
+			          if(symbol1->m_type == symbol2->m_type)
+			          {
+				          return symbol1->m_valueLow > symbol2->m_valueLow;
+			          }
+			          else
+			          {
+				          return symbol1->m_type > symbol2->m_type;
+			          }
+		          }
+		          else
+		          {
+			          return symbolRegAlloc1.useCount > symbolRegAlloc2.useCount;
+		          }
+	          });
 
 	for(auto& symbolRegAllocPair : sortedSymbols)
 	{
-		if(availableRegisters.empty()) break;
-
 		const auto& symbol = symbolRegAllocPair->first;
 		auto& symbolRegAlloc = symbolRegAllocPair->second;
 
-		//Find suitable register for this symbol
-		auto registerIterator = std::end(availableRegisters);
-		auto registerIteratorEnd = std::end(availableRegisters);
-		auto registerSymbolType = SYM_REGISTER;
+		std::vector<unsigned int>* availableRegisters = nullptr;
+		SYM_TYPE registerSymbolType = SYM_REGISTER;
+
 		if((symbol->m_type == SYM_RELATIVE) || (symbol->m_type == SYM_TEMPORARY))
 		{
-			registerIterator = availableRegisters.lower_bound(SYM_REGISTER);
-			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER);
+			availableRegisters = &availableGpRegisters;
 			registerSymbolType = SYM_REGISTER;
 		}
 		else if((symbol->m_type == SYM_REL_REFERENCE) || (symbol->m_type == SYM_TMP_REFERENCE))
 		{
-			registerIterator = availableRegisters.lower_bound(SYM_REGISTER);
-			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER);
+			availableRegisters = &availableGpRegisters;
 			registerSymbolType = SYM_REG_REFERENCE;
 		}
 		else if((symbol->m_type == SYM_FP_RELATIVE32) || (symbol->m_type == SYM_FP_TEMPORARY32))
 		{
-			registerIterator = availableRegisters.lower_bound(SYM_REGISTER128);
-			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER128);
+			availableRegisters = &availableMdRegisters;
 			registerSymbolType = SYM_FP_REGISTER32;
 		}
 		else if((symbol->m_type == SYM_RELATIVE128) || (symbol->m_type == SYM_TEMPORARY128))
 		{
-			registerIterator = availableRegisters.lower_bound(SYM_REGISTER128);
-			registerIteratorEnd = availableRegisters.upper_bound(SYM_REGISTER128);
+			availableRegisters = &availableMdRegisters;
 			registerSymbolType = SYM_REGISTER128;
 		}
-		if(registerIterator != registerIteratorEnd)
+
+		if(availableRegisters && !availableRegisters->empty())
 		{
 			symbolRegAlloc.registerType = registerSymbolType;
-			symbolRegAlloc.registerId = registerIterator->second;
-			availableRegisters.erase(registerIterator);
+			symbolRegAlloc.registerId = availableRegisters->back();
+			availableRegisters->pop_back();
 		}
 	}
 }
@@ -290,6 +407,7 @@ void CJitter::AssociateSymbolsToRegisters(SymbolRegAllocInfo& symbolRegAllocs) c
 CJitter::AllocationRangeArray CJitter::ComputeAllocationRanges(const BASIC_BLOCK& basicBlock)
 {
 	AllocationRangeArray result;
+	result.reserve(basicBlock.statements.size() / 2 + 1); //Reserve enough space for ranges
 	unsigned int currentStart = 0;
 	for(const auto& statementInfo : ConstIndexedStatementList(basicBlock.statements))
 	{

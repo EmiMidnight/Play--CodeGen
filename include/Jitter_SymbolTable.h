@@ -3,13 +3,14 @@
 #include <unordered_set>
 #include <vector>
 #include "Jitter_Symbol.h"
+#include "robin_hood.h"
 
 namespace Jitter
 {
 	class CSymbolTable final
 	{
 	public:
-		typedef std::unordered_set<SymbolPtr, SymbolHasher, SymbolComparator> SymbolSet;
+		typedef robin_hood::unordered_set<SymbolPtr, SymbolHasher, SymbolComparator> SymbolSet;
 		typedef SymbolSet::iterator SymbolIterator;
 
 		CSymbolTable();

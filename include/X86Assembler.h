@@ -6,7 +6,7 @@
 #include "Literal128.h"
 #include <map>
 #include <vector>
-
+#include "robin_hood.h"
 class CX86Assembler
 {
 public:
@@ -551,7 +551,7 @@ private:
 		uint32 offset = 0;
 		LITERAL128 value = LITERAL128(0, 0);
 	};
-	typedef std::map<LITERAL128ID, LITERAL128REF> Literal128Refs;
+	typedef robin_hood::unordered_map<LITERAL128ID, LITERAL128REF> Literal128Refs;
 
 	struct LABELINFO
 	{

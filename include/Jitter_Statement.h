@@ -3,6 +3,7 @@
 #include <list>
 #include <functional>
 #include "Jitter_SymbolRef.h"
+#include "plf_list.h"
 
 namespace Jitter
 {
@@ -257,7 +258,7 @@ namespace Jitter
 		}
 	};
 
-	typedef std::list<STATEMENT> StatementList;
+	typedef plf::list<STATEMENT> StatementList;
 
 	std::string ConditionToString(CONDITION);
 	CONDITION NegateCondition(CONDITION);

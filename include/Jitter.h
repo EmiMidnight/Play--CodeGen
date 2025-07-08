@@ -12,6 +12,8 @@
 #include "Stream.h"
 #include "Jitter_SymbolTable.h"
 #include "Jitter_CodeGen.h"
+#include <array>
+#include "robin_hood.h"
 
 #ifndef SIZE_MAX
 #define SIZE_MAX ((size_t)-1)
@@ -276,8 +278,8 @@ namespace Jitter
 		typedef std::map<LABEL, unsigned int> LabelMapType;
 		typedef std::pair<unsigned int, unsigned int> AllocationRange;
 		typedef std::vector<AllocationRange> AllocationRangeArray;
-		typedef std::unordered_map<SymbolPtr, SYMBOL_REGALLOCINFO, SymbolHasher, SymbolComparator> SymbolRegAllocInfo;
-		typedef std::unordered_map<CSymbol*, unsigned int> SymbolUseCountMap;
+		typedef robin_hood::unordered_map<SymbolPtr, SYMBOL_REGALLOCINFO, SymbolHasher, SymbolComparator> SymbolRegAllocInfo;
+		typedef robin_hood::unordered_map<CSymbol*, unsigned int> SymbolUseCountMap;
 		typedef std::stack<uint32> IntStack;
 
 		class CRelativeVersionManager
@@ -387,8 +389,42 @@ namespace Jitter
 		LabelMapType m_labels;
 
 		bool m_codeGenSupportsCmpSelect = false;
+		struct CSymbolRefPool
+		{
+			static constexpr size_t BLOCK_SIZE = 4096;
 
-		std::vector<CSymbolRef*> m_symbolRefs;
+			struct Block
+			{
+				alignas(CSymbolRef) uint8_t storage[sizeof(CSymbolRef) * BLOCK_SIZE];
+				size_t used = 0;
+
+				CSymbolRef* GetRef(size_t index)
+				{
+					return reinterpret_cast<CSymbolRef*>(&storage[sizeof(CSymbolRef) * index]);
+				}
+			};
+
+			std::vector<std::unique_ptr<Block>> blocks;
+			Block* currentBlock = nullptr;
+
+			CSymbolRef* Allocate()
+			{
+				if(!currentBlock || currentBlock->used >= BLOCK_SIZE)
+				{
+					blocks.push_back(std::make_unique<Block>());
+					currentBlock = blocks.back().get();
+				}
+				return currentBlock->GetRef(currentBlock->used++);
+			}
+
+			void Clear()
+			{
+				blocks.clear();
+				currentBlock = nullptr;
+			}
+		};
+
+		CSymbolRefPool m_symbolRefPool;
 	};
 
 }

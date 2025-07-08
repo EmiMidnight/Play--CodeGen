@@ -19,11 +19,7 @@ CJitter::~CJitter()
 
 void CJitter::ClearSymbolRefs()
 {
-	for(auto* symbolRef : m_symbolRefs)
-	{
-		delete symbolRef;
-	}
-	m_symbolRefs.clear();
+	m_symbolRefPool.Clear();
 }
 
 CCodeGen* CJitter::GetCodeGen()

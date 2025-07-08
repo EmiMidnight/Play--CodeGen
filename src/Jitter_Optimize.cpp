@@ -3,6 +3,7 @@
 #include <algorithm>
 #include "Jitter.h"
 #include "BitManip.h"
+#include "robin_hood.h"
 
 #ifdef _DEBUG
 //#define DUMP_STATEMENTS
@@ -35,9 +36,12 @@ CJitter::VERSIONED_STATEMENT_LIST CJitter::GenerateVersionedStatementList(const 
 	struct ReplaceUse
 	{
 		CJitter* jitter;
-		
-		ReplaceUse(CJitter* j) : jitter(j) {}
-		
+
+		ReplaceUse(CJitter* j)
+		    : jitter(j)
+		{
+		}
+
 		void operator()(SymbolRefPtr& symbolRef, CRelativeVersionManager& relativeVersions) const
 		{
 			if(CSymbol* symbol = dynamic_symbolref_cast(SYM_RELATIVE, symbolRef))
@@ -232,10 +236,10 @@ SymbolPtr CJitter::MakeSymbol(SYM_TYPE type, uint32 value)
 
 SymbolPtr CJitter::MakeConstantPtr(uintptr_t value)
 {
-#if(UINTPTR_MAX == UINT32_MAX)
+#if (UINTPTR_MAX == UINT32_MAX)
 	uint32 valueLo = static_cast<uint32>(value);
 	return MakeSymbol(m_currentBlock, SYM_CONSTANTPTR, valueLo, 0);
-#elif(UINTPTR_MAX == UINT64_MAX)
+#elif (UINTPTR_MAX == UINT64_MAX)
 	uint32 valueLo = static_cast<uint32>(value);
 	uint32 valueHi = static_cast<uint32>(value >> 32);
 	return MakeSymbol(m_currentBlock, SYM_CONSTANTPTR, valueLo, valueHi);
@@ -259,15 +263,15 @@ SymbolPtr CJitter::MakeSymbol(BASIC_BLOCK* basicBlock, SYM_TYPE type, uint32 val
 
 SymbolRefPtr CJitter::MakeSymbolRef(SymbolPtr symbol)
 {
-	auto* symbolRef = new CSymbolRef(symbol);
-	m_symbolRefs.push_back(symbolRef);
+	auto* symbolRef = m_symbolRefPool.Allocate();
+	new(symbolRef) CSymbolRef(symbol);
 	return symbolRef;
 }
 
 SymbolRefPtr CJitter::MakeSymbolRef(SymbolPtr symbol, int version)
 {
-	auto* symbolRef = new CSymbolRef(symbol, version);
-	m_symbolRefs.push_back(symbolRef);
+	auto* symbolRef = m_symbolRefPool.Allocate();
+	new(symbolRef) CSymbolRef(symbol, version);
 	return symbolRef;
 }
 
@@ -1226,7 +1230,7 @@ bool CJitter::CopyPropagation(StatementList& statements)
 		uint32 count = 0;
 		StatementList::iterator lastUse;
 	};
-	std::map<SymbolPtr, USAGEINFO> usageInfos;
+	robin_hood::unordered_map<SymbolPtr, USAGEINFO> usageInfos;
 
 	for(auto statementIterator(statements.begin());
 	    statements.end() != statementIterator; ++statementIterator)
@@ -1332,7 +1336,7 @@ bool CJitter::CommonExpressionElimination(VERSIONED_STATEMENT_LIST& versionedSta
 {
 	bool changed = false;
 	std::vector<StatementList::const_iterator> tempDefs;
-	std::unordered_map<SymbolPtr, SymbolPtr> tempReplaceMap;
+	robin_hood::unordered_map<SymbolPtr, SymbolPtr> tempReplaceMap;
 	tempReplaceMap.reserve(128);
 	tempDefs.reserve(128);
 	tempDefs.reserve(versionedStatementList.statements.size());
@@ -1362,7 +1366,7 @@ bool CJitter::CommonExpressionElimination(VERSIONED_STATEMENT_LIST& versionedSta
 				if(statement.src1 && !statement.src1->Equals(tempDefStatement.src1)) continue;
 				if(statement.src2 && !statement.src2->Equals(tempDefStatement.src2)) continue;
 				if(statement.src3 && !statement.src3->Equals(tempDefStatement.src3)) continue;
-				auto [_, inserted] = tempReplaceMap.insert(std::make_pair(newTemp, temp->GetSymbol()));
+				auto [_, inserted] = tempReplaceMap.emplace(newTemp, temp->GetSymbol());
 				assert(inserted);
 				found = true;
 				//We assume the first replacement we find is gonna be the best
@@ -1399,7 +1403,7 @@ bool CJitter::ClampingElimination(StatementList& statements)
 {
 	bool changed = false;
 
-	std::map<uint32, uint32> temporaryValues;
+	robin_hood::unordered_map<uint32, uint32> temporaryValues;
 
 	for(auto statementIterator(statements.begin());
 	    statements.end() != statementIterator; ++statementIterator)
@@ -1413,8 +1417,7 @@ bool CJitter::ClampingElimination(StatementList& statements)
 		   statement.src1->GetSymbol()->IsConstant())
 		{
 			auto src1Symbol = dynamic_symbolref_cast(SYM_CONSTANT, statement.src1);
-			temporaryValues.insert(
-			    std::make_pair(dstSymbol->m_valueLow, src1Symbol->m_valueLow));
+			temporaryValues.emplace(dstSymbol->m_valueLow, src1Symbol->m_valueLow);
 		}
 		else if(dstSymbol)
 		{
