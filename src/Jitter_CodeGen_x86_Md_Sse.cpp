@@ -955,7 +955,7 @@ void CCodeGen_x86::Emit_Md_MakeSz_Ssse3_VarVar(const STATEMENT& statement)
 	CommitSymbolRegister(dst, dstRegister);
 }
 
-void CCodeGen_x86::Emit_Md_Expand_VarReg(const STATEMENT& statement)
+void CCodeGen_x86::Emit_Md_ExpandW_VarReg(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -968,7 +968,7 @@ void CCodeGen_x86::Emit_Md_Expand_VarReg(const STATEMENT& statement)
 	CommitSymbolRegisterMdSse(dst, resultRegister);
 }
 
-void CCodeGen_x86::Emit_Md_Expand_VarMem(const STATEMENT& statement)
+void CCodeGen_x86::Emit_Md_ExpandW_VarMem(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -981,7 +981,7 @@ void CCodeGen_x86::Emit_Md_Expand_VarMem(const STATEMENT& statement)
 	CommitSymbolRegisterMdSse(dst, resultRegister);
 }
 
-void CCodeGen_x86::Emit_Md_Expand_VarCst(const STATEMENT& statement)
+void CCodeGen_x86::Emit_Md_ExpandW_VarCst(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -999,7 +999,7 @@ void CCodeGen_x86::Emit_Md_Expand_VarCst(const STATEMENT& statement)
 	CommitSymbolRegisterMdSse(dst, resultRegister);
 }
 
-void CCodeGen_x86::Emit_Md_Expand_VarVarCst(const STATEMENT& statement)
+void CCodeGen_x86::Emit_Md_ExpandW_VarVarCst(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -1207,11 +1207,11 @@ CCodeGen_x86::CONSTMATCHER CCodeGen_x86::g_mdSseConstMatchers[] =
 	{ OP_MD_SRL256, MATCH_VARIABLE128, MATCH_MEMORY256, MATCH_VARIABLE, MATCH_NIL, &CCodeGen_x86::Emit_Md_Srl256_VarMemVar },
 	{ OP_MD_SRL256, MATCH_VARIABLE128, MATCH_MEMORY256, MATCH_CONSTANT, MATCH_NIL, &CCodeGen_x86::Emit_Md_Srl256_VarMemCst },
 
-	{ OP_MD_EXPAND, MATCH_VARIABLE128, MATCH_REGISTER, MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_Expand_VarReg },
-	{ OP_MD_EXPAND, MATCH_VARIABLE128, MATCH_MEMORY,   MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_Expand_VarMem },
-	{ OP_MD_EXPAND, MATCH_VARIABLE128, MATCH_CONSTANT, MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_Expand_VarCst },
+	{ OP_MD_EXPAND_W, MATCH_VARIABLE128, MATCH_REGISTER, MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_ExpandW_VarReg },
+	{ OP_MD_EXPAND_W, MATCH_VARIABLE128, MATCH_MEMORY,   MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_ExpandW_VarMem },
+	{ OP_MD_EXPAND_W, MATCH_VARIABLE128, MATCH_CONSTANT, MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_ExpandW_VarCst },
 
-	{ OP_MD_EXPAND, MATCH_VARIABLE128, MATCH_VARIABLE128, MATCH_CONSTANT, MATCH_NIL, &CCodeGen_x86::Emit_Md_Expand_VarVarCst },
+	{ OP_MD_EXPAND_W, MATCH_VARIABLE128, MATCH_VARIABLE128, MATCH_CONSTANT, MATCH_NIL, &CCodeGen_x86::Emit_Md_ExpandW_VarVarCst },
 
 	{ OP_MD_PACK_HB, MATCH_VARIABLE128, MATCH_VARIABLE128, MATCH_VARIABLE128, MATCH_NIL, &CCodeGen_x86::Emit_Md_PackHB_VarVarVar },
 	{ OP_MD_PACK_WH, MATCH_VARIABLE128, MATCH_VARIABLE128, MATCH_VARIABLE128, MATCH_NIL, &CCodeGen_x86::Emit_Md_PackWH_VarVarVar },
@@ -1238,8 +1238,8 @@ CCodeGen_x86::CONSTMATCHER CCodeGen_x86::g_mdSseConstMatchers[] =
 	MD_CONST_MATCHERS_SINGLEOP(OP_MD_NEG_S, MDOP_NEG)
 	MD_CONST_MATCHERS_SINGLEOP(OP_MD_NOT,   MDOP_NOT)
 
-	MD_CONST_MATCHERS_2OPS(OP_MD_TOWORD_TRUNCATE, MDOP_TOWORD_TRUNCATE)
-	MD_CONST_MATCHERS_2OPS(OP_MD_TOSINGLE,        MDOP_TOSINGLE)
+	MD_CONST_MATCHERS_2OPS(OP_MD_TOINT32_TRUNC_S, MDOP_TOINT32_TRUNC_S)
+	MD_CONST_MATCHERS_2OPS(OP_MD_TOSINGLE_I32,    MDOP_TOSINGLE_I32)
 
 	{ OP_MOV, MATCH_REGISTER128, MATCH_VARIABLE128, MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_Mov_RegVar },
 	{ OP_MOV, MATCH_MEMORY128,   MATCH_REGISTER128, MATCH_NIL, MATCH_NIL, &CCodeGen_x86::Emit_Md_Mov_MemReg },

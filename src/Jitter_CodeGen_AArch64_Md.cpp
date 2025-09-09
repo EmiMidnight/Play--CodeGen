@@ -544,7 +544,7 @@ void CCodeGen_AArch64::Emit_Md_MovMasked_VarVarVar(const STATEMENT& statement)
 	CommitSymbolRegisterMd(dst, src1Reg);
 }
 
-void CCodeGen_AArch64::Emit_Md_Expand_VarReg(const STATEMENT& statement)
+void CCodeGen_AArch64::Emit_Md_ExpandW_VarReg(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -556,7 +556,7 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarReg(const STATEMENT& statement)
 	CommitSymbolRegisterMd(dst, dstReg);
 }
 
-void CCodeGen_AArch64::Emit_Md_Expand_VarMem(const STATEMENT& statement)
+void CCodeGen_AArch64::Emit_Md_ExpandW_VarMem(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -571,7 +571,7 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarMem(const STATEMENT& statement)
 	CommitSymbolRegisterMd(dst, dstReg);
 }
 
-void CCodeGen_AArch64::Emit_Md_Expand_VarCst(const STATEMENT& statement)
+void CCodeGen_AArch64::Emit_Md_ExpandW_VarCst(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -618,7 +618,7 @@ void CCodeGen_AArch64::Emit_Md_Expand_VarCst(const STATEMENT& statement)
 	CommitSymbolRegisterMd(dst, dstReg);
 }
 
-void CCodeGen_AArch64::Emit_Md_Expand_VarVarCst(const STATEMENT& statement)
+void CCodeGen_AArch64::Emit_Md_ExpandW_VarVarCst(const STATEMENT& statement)
 {
 	auto dst = statement.dst->GetSymbol();
 	auto src1 = statement.src1->GetSymbol();
@@ -831,8 +831,8 @@ CCodeGen_AArch64::CONSTMATCHER CCodeGen_AArch64::g_mdConstMatchers[] =
 	{ OP_MD_MAKECLIP,           MATCH_VARIABLE,       MATCH_VARIABLE128,    MATCH_VARIABLE128,      MATCH_VARIABLE128, &CCodeGen_AArch64::Emit_Md_MakeClip_VarVarVarVar         },
 	{ OP_MD_MAKESZ,             MATCH_VARIABLE,       MATCH_VARIABLE128,    MATCH_NIL,              MATCH_NIL,         &CCodeGen_AArch64::Emit_Md_MakeSz_VarVar                 },
 	
-	{ OP_MD_TOSINGLE,           MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_VarVar<MDOP_TOSINGLE>                 },
-	{ OP_MD_TOWORD_TRUNCATE,    MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_VarVar<MDOP_TOWORD>                   },
+	{ OP_MD_TOSINGLE_I32,       MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_VarVar<MDOP_TOSINGLE_I32>             },
+	{ OP_MD_TOINT32_TRUNC_S,    MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_VarVar<MDOP_TOINT32_TRUNC_S>          },
 
 	{ OP_LOADFROMREF,           MATCH_VARIABLE128,    MATCH_VAR_REF,        MATCH_NIL,              MATCH_NIL,         &CCodeGen_AArch64::Emit_Md_LoadFromRef_VarVar            },
 	{ OP_LOADFROMREF,           MATCH_VARIABLE128,    MATCH_VAR_REF,        MATCH_ANY32,            MATCH_NIL,         &CCodeGen_AArch64::Emit_Md_LoadFromRef_VarVarAny         },
@@ -844,10 +844,10 @@ CCodeGen_AArch64::CONSTMATCHER CCodeGen_AArch64::g_mdConstMatchers[] =
 	
 	{ OP_MD_MOV_MASKED,         MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_VARIABLE128,      MATCH_NIL, &CCodeGen_AArch64::Emit_Md_MovMasked_VarVarVar                   },
 
-	{ OP_MD_EXPAND,             MATCH_VARIABLE128,    MATCH_REGISTER,       MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_Expand_VarReg                         },
-	{ OP_MD_EXPAND,             MATCH_VARIABLE128,    MATCH_MEMORY,         MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_Expand_VarMem                         },
-	{ OP_MD_EXPAND,             MATCH_VARIABLE128,    MATCH_CONSTANT,       MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_Expand_VarCst                         },
-	{ OP_MD_EXPAND,             MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_CONSTANT,         MATCH_NIL, &CCodeGen_AArch64::Emit_Md_Expand_VarVarCst                      },
+	{ OP_MD_EXPAND_W,           MATCH_VARIABLE128,    MATCH_REGISTER,       MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_ExpandW_VarReg                        },
+	{ OP_MD_EXPAND_W,           MATCH_VARIABLE128,    MATCH_MEMORY,         MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_ExpandW_VarMem                        },
+	{ OP_MD_EXPAND_W,           MATCH_VARIABLE128,    MATCH_CONSTANT,       MATCH_NIL,              MATCH_NIL, &CCodeGen_AArch64::Emit_Md_ExpandW_VarCst                        },
+	{ OP_MD_EXPAND_W,           MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_CONSTANT,         MATCH_NIL, &CCodeGen_AArch64::Emit_Md_ExpandW_VarVarCst                     },
 
 	{ OP_MD_PACK_HB,            MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_VARIABLE128,      MATCH_NIL, &CCodeGen_AArch64::Emit_Md_PackHB_VarVarVar                      },
 	{ OP_MD_PACK_WH,            MATCH_VARIABLE128,    MATCH_VARIABLE128,    MATCH_VARIABLE128,      MATCH_NIL, &CCodeGen_AArch64::Emit_Md_PackWH_VarVarVar                      },

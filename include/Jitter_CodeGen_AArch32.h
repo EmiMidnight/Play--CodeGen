@@ -503,12 +503,12 @@ namespace Jitter
 			static OpRegType OpReg() { return &CAArch32Assembler::Vneg_F32; }
 		};
 
-		struct MDOP_TOSINGLE : public MDOP_BASE2
+		struct MDOP_TOSINGLE_I32 : public MDOP_BASE2
 		{
 			static OpRegType OpReg() { return &CAArch32Assembler::Vcvt_F32_S32; }
 		};
 
-		struct MDOP_TOWORD : public MDOP_BASE2
+		struct MDOP_TOINT32_S : public MDOP_BASE2
 		{
 			static OpRegType OpReg() { return &CAArch32Assembler::Vcvt_S32_F32; }
 		};
@@ -730,10 +730,10 @@ namespace Jitter
 		void Emit_Md_StoreAtRefMasked_MemAnyMem(const STATEMENT&);
 
 		void Emit_Md_MovMasked_MemMemMem(const STATEMENT&);
-		void Emit_Md_Expand_MemReg(const STATEMENT&);
-		void Emit_Md_Expand_MemMem(const STATEMENT&);
-		void Emit_Md_Expand_MemCst(const STATEMENT&);
-		void Emit_Md_Expand_VarVarCst(const STATEMENT&);
+		void Emit_Md_ExpandW_MemReg(const STATEMENT&);
+		void Emit_Md_ExpandW_MemMem(const STATEMENT&);
+		void Emit_Md_ExpandW_MemCst(const STATEMENT&);
+		void Emit_Md_ExpandW_VarVarCst(const STATEMENT&);
 
 		void Emit_Md_ClampS_MemMem(const STATEMENT&);
 

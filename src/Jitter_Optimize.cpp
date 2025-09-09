@@ -1303,6 +1303,29 @@ bool CJitter::CopyPropagation(StatementList& statements)
 			innerStatement.jmpCondition = outerStatement.jmpCondition;
 			changed = true;
 		}
+		//Substitute src operand of a statement if our defining statement (outerStatement) is a OP_MOV
+		//Example:
+		//outerDstSymbol -> t0
+		//Before:
+		// - t0 = r0
+		// - r1 = t0 & r2
+		//After:
+		// - t0 = r0
+		// - r1 = r0 & r2
+		//After substitution, t0 will not be used anymore making outerStatement eligible for removal
+		else if(outerStatement.op == OP_MOV)
+		{
+			auto replacementSym = outerStatement.src1;
+			innerStatement.VisitSources(
+			    [&](SymbolRefPtr& symbol, bool) {
+				    if(symbol->Equals(outerDstSymbol))
+				    {
+					    symbol = replacementSym;
+					    changed = true;
+				    }
+			    });
+			assert(changed);
+		}
 		//Find all the add/sub constant and add them together
 		//Example
 		//outerDstSymbol -> t0
@@ -1412,7 +1435,7 @@ bool CJitter::ClampingElimination(StatementList& statements)
 
 		auto dstSymbol = dynamic_symbolref_cast(SYM_TEMPORARY128, statement.dst);
 
-		if((statement.op == OP_MD_EXPAND) &&
+		if((statement.op == OP_MD_EXPAND_W) &&
 		   dstSymbol &&
 		   statement.src1->GetSymbol()->IsConstant())
 		{
