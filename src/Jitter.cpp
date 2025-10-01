@@ -1191,6 +1191,11 @@ void CJitter::MD_SubB()
 	InsertBinaryMdStatement(OP_MD_SUB_B);
 }
 
+void CJitter::MD_SubBSS()
+{
+	InsertBinaryMdStatement(OP_MD_SUBSS_B);
+}
+
 void CJitter::MD_SubBUS()
 {
 	InsertBinaryMdStatement(OP_MD_SUBUS_B);
